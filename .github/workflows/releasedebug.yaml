@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
 
 jobs:
@@ -39,6 +39,18 @@ jobs:
           echo "$ENCODED_STRING" > keystore-b64.txt
           base64 -d keystore-b64.txt > "$SIGNING_KEY_STORE_PATH"
 
+      - name: Set Google Service Credentials
+        env:
+          APP_DISTRIBUTION_JSON: ${{ secrets.APP_DISTRIBUTION_JSON}}
+        run: |
+          echo "$APP_DISTRIBUTION_JSON" > ${{ github.workspace }}/app-distribution.json
+
+      - name: Set Google Services File
+        env:
+          SERVICES_JSON: ${{ secrets.GOOGLE_SERVICE_JSON }}
+        run: |
+          echo "$SERVICES_JSON" > ${{ github.workspace }}/app/google-services.json
+
       - name: Build Debug APK
         env:
           SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
@@ -52,3 +64,12 @@ jobs:
         with:
           name: debug-artifacts
           path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Release To Firebase App Distribution
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/app-distribution.json
+          SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+        run: ./gradlew assembleDebug appDistributionUploadDebug

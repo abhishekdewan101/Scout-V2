@@ -1,6 +1,21 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.app.distribution)
+}
+
+val versionMajor = 0
+val versionMinor = 0
+val versionPatch = 0
+val versionBuild = 1
+
+fun generateVersionCode(): Int {
+    return versionMajor * 10000 + versionMinor * 1000 + versionPatch * 10 + versionBuild
+}
+
+fun generateVersionName(): String {
+    return "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
 }
 
 android {
@@ -11,8 +26,8 @@ android {
         applicationId = "com.adewan.scout"
         minSdk = 30
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = generateVersionCode()
+        versionName = generateVersionName()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -38,6 +53,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        getByName("debug") {
+            versionNameSuffix = "-SNAPSHOT"
+            firebaseAppDistribution {
+                artifactType = "APK"
+                groups = "dev-testers"
+            }
         }
     }
     compileOptions {
@@ -70,6 +92,10 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    //firebase
+    implementation(platform(libs.firebase.bom))
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

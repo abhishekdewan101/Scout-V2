@@ -18,6 +18,17 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        signingConfigs {
+            getByName("debug") {
+                // Set the values in your .bashrc/.zshrc file and
+                // then restart android studio and gradle to get the values to pick up
+                storeFile = file("$rootDir/dev.keystore")
+                storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {

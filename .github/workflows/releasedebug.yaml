@@ -57,6 +57,7 @@ jobs:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          GOOGLE_OAUTH_CREDS: ${{ secrets.GOOGLE_OAUTH_CREDS }}
         run: ./gradlew assembleDebug
 
       - name: Upload Debug APK to Artifacts
@@ -72,4 +73,5 @@ jobs:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          GOOGLE_OAUTH_CREDS: ${{ secrets.GOOGLE_OAUTH_CREDS }}
         run: ./gradlew assembleDebug appDistributionUploadDebug

@@ -20,12 +20,12 @@ fun generateVersionName(): String {
 
 android {
     namespace = "com.adewan.scout"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.adewan.scout"
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 35
         versionCode = generateVersionCode()
         versionName = generateVersionName()
 
@@ -44,6 +44,8 @@ android {
                 keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
             }
         }
+
+
     }
 
     buildTypes {
@@ -60,6 +62,12 @@ android {
                 artifactType = "APK"
                 groups = "dev-testers"
             }
+
+            buildConfigField(
+                "String",
+                "GOOGLE_OAUTH_CREDS",
+                "\"${System.getenv("GOOGLE_OAUTH_CREDS")}\""
+            )
         }
     }
     compileOptions {
@@ -71,6 +79,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -95,6 +104,10 @@ dependencies {
 
     //firebase
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

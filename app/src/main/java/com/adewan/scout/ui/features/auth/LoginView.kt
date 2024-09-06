@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,21 +24,51 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
 import com.adewan.scout.R
+import com.adewan.scout.core.auth.AuthenticationState
 import com.adewan.scout.ui.theme.poppinsFont
 import com.adewan.scout.ui.theme.postGuerillaFont
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun LoginView() {
+fun LoginView(viewModel: LoginViewModel = koinViewModel()) {
+
+    val authenticationState by viewModel.authenticationState.collectAsState(initial = AuthenticationState.USER_UNAUTHENTICATED)
+
+    LaunchedEffect(authenticationState) {
+        if (authenticationState == AuthenticationState.USER_AUTHENTICATED) {
+            // navigate
+            println("User Authenticated")
+        }
+    }
+
+    LoginViewInternal(
+        getCredentialRequest = viewModel::getCredentialRequest,
+        processCredentials = viewModel::processCredentials
+    )
+}
+
+@Composable
+private fun LoginViewInternal(
+    getCredentialRequest: () -> GetCredentialRequest,
+    processCredentials: (GetCredentialResponse) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Red)
     ) {
         Image(
             painter = painterResource(R.drawable.loginbackgroundrotated),
@@ -93,7 +127,17 @@ fun LoginView() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 20.dp)
-                            .clickable { }
+                            .clickable {
+                                scope.launch {
+                                    val response = CredentialManager
+                                        .create(context)
+                                        .getCredential(
+                                            context = context,
+                                            request = getCredentialRequest()
+                                        )
+                                    processCredentials(response)
+                                }
+                            }
                             .clip(MaterialTheme.shapes.medium)
                             .background(
                                 brush = Brush.linearGradient(
@@ -113,5 +157,7 @@ fun LoginView() {
 @Preview
 @Composable
 fun LoginViewPreview() {
-    LoginView()
+    LoginViewInternal(
+        getCredentialRequest = { GetCredentialRequest.Builder().build() },
+        processCredentials = {})
 }

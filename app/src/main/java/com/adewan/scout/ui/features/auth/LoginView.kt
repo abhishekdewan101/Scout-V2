@@ -41,14 +41,17 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun LoginView(viewModel: LoginViewModel = koinViewModel()) {
+fun LoginView(
+    viewModel: LoginViewModel = koinViewModel(),
+    navigateToPreferenceSelection: () -> Unit
+) {
 
     val authenticationState by viewModel.authenticationState.collectAsState(initial = AuthenticationState.USER_UNAUTHENTICATED)
 
     LaunchedEffect(authenticationState) {
         if (authenticationState == AuthenticationState.USER_AUTHENTICATED) {
             // navigate
-            println("User Authenticated")
+            navigateToPreferenceSelection()
         }
     }
 

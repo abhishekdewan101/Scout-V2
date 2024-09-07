@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.app.distribution)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 val versionMajor = 0
@@ -112,6 +113,9 @@ dependencies {
     //compose navigation
     implementation(libs.androidx.navigation.compose)
     implementation(libs.koin.androidx.compose)
+
+    //json
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

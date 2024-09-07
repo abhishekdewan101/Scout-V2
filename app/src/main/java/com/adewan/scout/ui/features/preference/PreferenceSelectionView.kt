@@ -150,7 +150,7 @@ private fun PreferenceBottomSheetContent(screenHeight: Int, showPlatformSelectio
             Spacer(modifier = Modifier.weight(0.2f))
         }
 
-        Text("Get Started",
+        Text("Continue",
             fontFamily = poppinsFont,
             fontWeight = FontWeight.SemiBold,
             color = Color.White,

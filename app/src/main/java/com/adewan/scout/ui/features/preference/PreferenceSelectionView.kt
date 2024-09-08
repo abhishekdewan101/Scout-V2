@@ -52,15 +52,18 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun PreferenceSelectionView(
     viewModel: PreferenceSelectionViewModel = koinViewModel(),
-    showPlatformSelection: () -> Unit
+    showPlatformSelection: () -> Unit,
+    showGenreSelection: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
 
     var platformSelected by remember { mutableStateOf(false) }
+    var genresSelected by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel) {
         platformSelected = viewModel.getSelectedPlatforms().isNotEmpty()
+        genresSelected = viewModel.getSelectedGenres().isNotEmpty()
     }
 
     BottomSheetScaffold(
@@ -74,7 +77,9 @@ fun PreferenceSelectionView(
             PreferenceBottomSheetContent(
                 screenHeight = screenHeight,
                 platformSelected = platformSelected,
-                showPlatformSelection = showPlatformSelection
+                genresSelected = genresSelected,
+                showPlatformSelection = showPlatformSelection,
+                showGenreSelection = showGenreSelection
             )
         },
         sheetPeekHeight = screenHeight.dp / 2f,
@@ -104,7 +109,9 @@ fun PreferenceSelectionView(
 private fun PreferenceBottomSheetContent(
     screenHeight: Int,
     platformSelected: Boolean,
-    showPlatformSelection: () -> Unit
+    genresSelected: Boolean,
+    showPlatformSelection: () -> Unit,
+    showGenreSelection: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -160,7 +167,7 @@ private fun PreferenceBottomSheetContent(
                 .padding(horizontal = 16.dp)
                 .border(1.dp, Color(0xFF9CB5B7), MaterialTheme.shapes.medium)
                 .padding(vertical = 15.dp)
-                .clickable { },
+                .clickable { showGenreSelection() },
             horizontalArrangement = Arrangement.Center
         ) {
             Spacer(modifier = Modifier.weight(1f))
@@ -171,7 +178,11 @@ private fun PreferenceBottomSheetContent(
                 color = Color(0xFF9CB5B7),
             )
             Spacer(modifier = Modifier.weight(1f))
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, "", tint = Color(0xFF9CB5B7))
+            if (genresSelected) {
+                Icon(Icons.Default.Check, "", tint = Color(0xFF9CB5B7))
+            } else {
+                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, "", tint = Color(0xFF9CB5B7))
+            }
             Spacer(modifier = Modifier.weight(0.2f))
         }
 
@@ -196,5 +207,5 @@ private fun PreferenceBottomSheetContent(
 @Preview
 @Composable
 fun PreferenceSelectionViewPreview() {
-    PreferenceSelectionView(showPlatformSelection = {})
+    PreferenceSelectionView(showPlatformSelection = {}, showGenreSelection = {})
 }

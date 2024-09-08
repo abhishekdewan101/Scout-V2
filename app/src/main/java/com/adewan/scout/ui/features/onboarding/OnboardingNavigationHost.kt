@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.adewan.scout.ui.features.auth.LoginView
+import com.adewan.scout.ui.features.preference.GenreSelectionView
 import com.adewan.scout.ui.features.preference.PlatformSelectionView
 import com.adewan.scout.ui.features.preference.PreferenceSelectionView
 
@@ -46,6 +47,8 @@ fun OnboardingNavigationHost() {
                 navController.navigate(
                     OnboardingDestinations.PlatformSelectionView.route
                 )
+            }, showGenreSelection = {
+                navController.navigate(OnboardingDestinations.GenreSelectionView.route)
             })
         }
 
@@ -55,6 +58,14 @@ fun OnboardingNavigationHost() {
             popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
             exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) }) {
             PlatformSelectionView(goBack = { navController.popBackStack() })
+        }
+
+        composable(
+            route = OnboardingDestinations.GenreSelectionView.route,
+            enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
+            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
+            exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) }) {
+            GenreSelectionView(goBack = { navController.popBackStack() })
         }
     }
 }

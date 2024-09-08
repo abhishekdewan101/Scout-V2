@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.adewan.scout.core.auth.FirebaseAuthenticationRepository
+import com.adewan.scout.core.genres.GenreRepository
 import com.adewan.scout.core.platform.PlatformRepository
 import com.adewan.scout.ui.features.auth.LoginViewModel
 import com.adewan.scout.ui.features.preference.PreferenceSelectionViewModel
@@ -17,8 +18,15 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "sc
 val appModule = module {
     single { FirebaseAuthenticationRepository(auth = FirebaseAuth.getInstance()) }
     single { PlatformRepository(resources = get<Context>().resources) }
+    single { GenreRepository(resources = get<Context>().resources) }
     single<DataStore<Preferences>> { get<Context>().dataStore }
 
     viewModel { LoginViewModel(authenticationRepository = get()) }
-    viewModel { PreferenceSelectionViewModel(platformRepository = get(), dataStore = get()) }
+    viewModel {
+        PreferenceSelectionViewModel(
+            platformRepository = get(),
+            dataStore = get(),
+            genreRepository = get()
+        )
+    }
 }

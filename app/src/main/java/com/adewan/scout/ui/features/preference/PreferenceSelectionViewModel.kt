@@ -3,6 +3,7 @@ package com.adewan.scout.ui.features.preference
 import androidx.compose.runtime.mutableStateListOf
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
@@ -55,5 +56,16 @@ class PreferenceSelectionViewModel(
         dataStore.edit {
             it[stringPreferencesKey("selected_platforms")] = Json.encodeToString(platforms)
         }
+    }
+
+    suspend fun setOnboardingDone() {
+        dataStore.edit {
+            it[booleanPreferencesKey("onboarding_done")] = true
+        }
+    }
+
+    suspend fun isOnboardingDone(): Boolean {
+        val data = dataStore.data.first()
+        return data.toPreferences()[booleanPreferencesKey("onboarding_done")] ?: false
     }
 }

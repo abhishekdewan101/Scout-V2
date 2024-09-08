@@ -31,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.adewan.scout.R
 import com.adewan.scout.ui.theme.poppinsFont
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,13 +55,16 @@ import org.koin.androidx.compose.koinViewModel
 fun PreferenceSelectionView(
     viewModel: PreferenceSelectionViewModel = koinViewModel(),
     showPlatformSelection: () -> Unit,
-    showGenreSelection: () -> Unit
+    showGenreSelection: () -> Unit,
+    showMainNavigation: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
 
     var platformSelected by remember { mutableStateOf(false) }
     var genresSelected by remember { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(viewModel) {
         platformSelected = viewModel.getSelectedPlatforms().isNotEmpty()
@@ -79,7 +84,13 @@ fun PreferenceSelectionView(
                 platformSelected = platformSelected,
                 genresSelected = genresSelected,
                 showPlatformSelection = showPlatformSelection,
-                showGenreSelection = showGenreSelection
+                showGenreSelection = showGenreSelection,
+                setOnboardingDone = {
+                    scope.launch {
+                        viewModel.setOnboardingDone()
+                    }
+                },
+                showMainNavigation = showMainNavigation
             )
         },
         sheetPeekHeight = screenHeight.dp / 2f,
@@ -111,7 +122,9 @@ private fun PreferenceBottomSheetContent(
     platformSelected: Boolean,
     genresSelected: Boolean,
     showPlatformSelection: () -> Unit,
-    showGenreSelection: () -> Unit
+    showGenreSelection: () -> Unit,
+    setOnboardingDone: () -> Unit,
+    showMainNavigation: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -195,7 +208,8 @@ private fun PreferenceBottomSheetContent(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
                 .clickable {
-
+                    setOnboardingDone()
+                    showMainNavigation()
                 }
                 .clip(MaterialTheme.shapes.medium)
                 .border(1.dp, Color(0xFF9CB5B7), MaterialTheme.shapes.medium)
@@ -207,5 +221,8 @@ private fun PreferenceBottomSheetContent(
 @Preview
 @Composable
 fun PreferenceSelectionViewPreview() {
-    PreferenceSelectionView(showPlatformSelection = {}, showGenreSelection = {})
+    PreferenceSelectionView(
+        showPlatformSelection = {},
+        showGenreSelection = {},
+        showMainNavigation = {})
 }

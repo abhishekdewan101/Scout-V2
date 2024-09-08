@@ -5,5 +5,5 @@ enum class OnboardingDestinations(val route: String) {
     PreferenceSelectionView("preferenceSelectionView"),
     PlatformSelectionView("platformSelectionView"),
     GenreSelectionView("genreSelectionView"),
-    HomeView("homeView")
+    MainNavigationView("mainNavigationView")
 }

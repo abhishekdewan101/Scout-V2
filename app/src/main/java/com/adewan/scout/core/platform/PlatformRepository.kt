@@ -12,4 +12,8 @@ class PlatformRepository(private val resources: Resources) {
             resources.openRawResource(R.raw.platforms).bufferedReader().use { it.readText() }
         return json.decodeFromString(localJson)
     }
+
+    fun getPlatformsFromString(jsonString: String): List<Platform> {
+        return json.decodeFromString(jsonString)
+    }
 }

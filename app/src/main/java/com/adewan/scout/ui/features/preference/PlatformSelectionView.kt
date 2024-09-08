@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adewan.scout.core.models.Platform
 import com.adewan.scout.ui.theme.poppinsFont
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +54,13 @@ fun PlatformSelectionView(
     LaunchedEffect(viewModel) {
         viewModel.getPlatforms()
     }
+
+    LaunchedEffect(viewModel) {
+        selectedPlatforms.clear()
+        selectedPlatforms.addAll(viewModel.getSelectedPlatforms())
+    }
+
+    val scope = rememberCoroutineScope()
 
     Scaffold(topBar = {
         TopAppBar(title = {
@@ -89,18 +98,20 @@ fun PlatformSelectionView(
                 tint = Color(0xFF9CB5B7)
             )
         }, modifier = Modifier.padding(horizontal = 16.dp), actions = {
-            if (selectedPlatforms.isNotEmpty()) {
-                Text(
-                    "Save",
-                    color = Color(0xFF9CB5B7),
-                    fontFamily = poppinsFont,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .clickable {
-                            goBack()
-                        })
-            }
+            Text(
+                "Save",
+                color = Color(0xFF9CB5B7),
+                fontFamily = poppinsFont,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clickable(enabled = selectedPlatforms.isNotEmpty()) {
+                        scope.launch {
+                            viewModel.saveSelectedPlatforms(selectedPlatforms)
+                        }
+                        goBack()
+                    })
+
         })
     }) {
         val filteredPlatformList = if (filter.isNotEmpty()) {

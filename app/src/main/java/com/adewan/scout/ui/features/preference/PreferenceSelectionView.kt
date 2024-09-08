@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +27,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
@@ -40,12 +46,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.adewan.scout.R
 import com.adewan.scout.ui.theme.poppinsFont
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreferenceSelectionView(showPlatformSelection: () -> Unit) {
+fun PreferenceSelectionView(
+    viewModel: PreferenceSelectionViewModel = koinViewModel(),
+    showPlatformSelection: () -> Unit
+) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
+
+    var platformSelected by remember { mutableStateOf(false) }
+
+    LaunchedEffect(viewModel) {
+        platformSelected = viewModel.getSelectedPlatforms().isNotEmpty()
+    }
 
     BottomSheetScaffold(
         scaffoldState = rememberBottomSheetScaffoldState(
@@ -57,6 +73,7 @@ fun PreferenceSelectionView(showPlatformSelection: () -> Unit) {
         sheetContent = {
             PreferenceBottomSheetContent(
                 screenHeight = screenHeight,
+                platformSelected = platformSelected,
                 showPlatformSelection = showPlatformSelection
             )
         },
@@ -84,7 +101,11 @@ fun PreferenceSelectionView(showPlatformSelection: () -> Unit) {
 }
 
 @Composable
-private fun PreferenceBottomSheetContent(screenHeight: Int, showPlatformSelection: () -> Unit) {
+private fun PreferenceBottomSheetContent(
+    screenHeight: Int,
+    platformSelected: Boolean,
+    showPlatformSelection: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,7 +146,11 @@ private fun PreferenceBottomSheetContent(screenHeight: Int, showPlatformSelectio
                 color = Color(0xFF9CB5B7),
             )
             Spacer(modifier = Modifier.weight(1f))
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, "", tint = Color(0xFF9CB5B7))
+            if (platformSelected) {
+                Icon(Icons.Default.Check, "", tint = Color(0xFF9CB5B7))
+            } else {
+                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, "", tint = Color(0xFF9CB5B7))
+            }
             Spacer(modifier = Modifier.weight(0.2f))
         }
 

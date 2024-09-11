@@ -13,4 +13,8 @@ class LoginViewModel(
 
     fun processCredentials(response: GetCredentialResponse) =
         authenticationRepository.processCredential(response)
+
+    suspend fun getAccessToken(): String? {
+        return authenticationRepository.getAccessToken()
+    }
 }

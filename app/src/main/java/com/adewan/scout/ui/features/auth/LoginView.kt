@@ -1,5 +1,6 @@
 package com.adewan.scout.ui.features.auth
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,14 +52,22 @@ fun LoginView(
 
     val authenticationState by viewModel.authenticationState.collectAsState(initial = AuthenticationState.USER_UNAUTHENTICATED)
 
+    var authenticationError by remember { mutableStateOf(false) }
+
     LaunchedEffect(authenticationState) {
         if (authenticationState == AuthenticationState.USER_AUTHENTICATED) {
             // navigate
-            navigateToPreferenceSelection()
+            val accessToken = viewModel.getAccessToken()
+            if (accessToken != null) {
+                navigateToPreferenceSelection()
+            } else {
+                authenticationError = true
+            }
         }
     }
 
     LoginViewInternal(
+        authenticationError = authenticationError,
         getCredentialRequest = viewModel::getCredentialRequest,
         processCredentials = viewModel::processCredentials
     )
@@ -63,6 +75,7 @@ fun LoginView(
 
 @Composable
 private fun LoginViewInternal(
+    authenticationError: Boolean,
     getCredentialRequest: () -> GetCredentialRequest,
     processCredentials: (GetCredentialResponse) -> Unit
 ) {
@@ -81,6 +94,29 @@ private fun LoginViewInternal(
                 .scale(1.75f),
             contentScale = ContentScale.Crop,
         )
+
+
+        AnimatedVisibility(
+            authenticationError,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 15.dp)
+                .padding(vertical = 15.dp)
+                .clip(MaterialTheme.shapes.medium)
+                .background(Color(0xFF08B0000))
+        ) {
+            Text(
+                "Ran into an authentication error. Please be patient",
+                modifier = Modifier.padding(10.dp),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = poppinsFont,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+        }
+
+
 
         Box(
             modifier = Modifier
@@ -161,6 +197,7 @@ private fun LoginViewInternal(
 @Composable
 fun LoginViewPreview() {
     LoginViewInternal(
+        authenticationError = true,
         getCredentialRequest = { GetCredentialRequest.Builder().build() },
         processCredentials = {})
 }

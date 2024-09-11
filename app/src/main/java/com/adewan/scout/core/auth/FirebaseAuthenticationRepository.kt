@@ -3,26 +3,38 @@ package com.adewan.scout.core.auth
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import com.adewan.scout.BuildConfig
+import com.adewan.scout.core.network.NetworkClient
+import com.adewan.scout.core.network.models.IgdbAuthentication
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.tasks.await
+import java.time.Instant
 
 enum class AuthenticationState {
     USER_AUTHENTICATED,
     USER_UNAUTHENTICATED
 }
 
-class FirebaseAuthenticationRepository(private val auth: FirebaseAuth) {
+class FirebaseAuthenticationRepository(
+    private val auth: FirebaseAuth,
+    private val datastore: FirebaseFirestore,
+    private val networkClient: NetworkClient
+) {
     private val initialState = if (auth.currentUser != null) {
         AuthenticationState.USER_AUTHENTICATED
     } else {
         AuthenticationState.USER_UNAUTHENTICATED
     }
     private val authenticationState = MutableStateFlow(initialState)
+
+    private var accessToken: String? = null
 
     init {
         auth.addAuthStateListener {
@@ -62,4 +74,36 @@ class FirebaseAuthenticationRepository(private val auth: FirebaseAuth) {
             auth.signInWithCredential(firebaseCredential)
         }
     }
+
+    suspend fun getAccessToken(): String? {
+        if (auth.currentUser == null) return null
+
+        if (accessToken != null) return accessToken
+
+        val cachedAuthentication =
+            datastore.collection("igdbAuth").document("currentAuth").get().await()
+                .toObject<IgdbAuthentication>()
+
+        if (cachedAuthentication != null && cachedAuthentication.isValid()) {
+            accessToken = cachedAuthentication.accessToken
+            return accessToken
+        }
+
+        val networkAuth = networkClient.getAuthentication().run {
+            this.copy(expiresIn = this.expiresIn + Instant.now().epochSecond)
+        }
+
+        val result = datastore.collection("igdbAuth").document("currentAuth").set(networkAuth)
+
+        if (result.isSuccessful) {
+            accessToken = networkAuth.accessToken
+            return accessToken
+        } else {
+            return null
+        }
+    }
+}
+
+private fun IgdbAuthentication.isValid(): Boolean {
+    return this.expiresIn >= Instant.now().epochSecond
 }

@@ -35,6 +35,9 @@ android {
             useSupportLibrary = true
         }
 
+        buildConfigField("String", "clientId", "\"${System.getenv("IGDB_CLIENT_ID")}\"")
+        buildConfigField("String", "clientSecret", "\"${System.getenv("IGDB_CLIENT_SECRET")}\"")
+
         signingConfigs {
             getByName("debug") {
                 // Set the values in your .bashrc/.zshrc file and
@@ -109,15 +112,24 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation(libs.firebase.firestore)
 
     //compose navigation
     implementation(libs.androidx.navigation.compose)
     implementation(libs.koin.androidx.compose)
 
+    //ktor
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.json)
+    implementation(libs.ktor.client.content.negotiation)
+
     //json
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.material.icons.extended)
+    implementation(libs.logcat)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

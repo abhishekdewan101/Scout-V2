@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.adewan.scout.ui.features.home.HomeTabView
 
 @Composable
 fun MainTabbedView() {
@@ -59,7 +60,7 @@ fun MainTabbedView() {
             startDestination = TabDestinations.Home.route
         ) {
             composable(route = TabDestinations.Home.route) {
-                Text("Home View")
+                HomeTabView()
             }
             composable(route = TabDestinations.Library.route) {
                 Text("Library View")

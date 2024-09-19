@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
+import com.adewan.scout.core.auth.FirebaseAuthenticationRepository
 import com.adewan.scout.core.genres.GenreRepository
 import com.adewan.scout.core.models.Genre
 import com.adewan.scout.core.models.Platform
@@ -18,6 +19,7 @@ import kotlinx.serialization.json.Json
 class PreferenceSelectionViewModel(
     private val platformRepository: PlatformRepository,
     private val genreRepository: GenreRepository,
+    private val authenticationRepository: FirebaseAuthenticationRepository,
     private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
 
@@ -67,5 +69,9 @@ class PreferenceSelectionViewModel(
     suspend fun isOnboardingDone(): Boolean {
         val data = dataStore.data.first()
         return data.toPreferences()[booleanPreferencesKey("onboarding_done")] ?: false
+    }
+
+    suspend fun isAccessTokenSet(): Boolean {
+        return authenticationRepository.getAccessToken() != null
     }
 }

@@ -50,6 +50,10 @@ class FirebaseAuthenticationRepository(
         return authenticationState
     }
 
+    fun getCurrentAccessToken(): String {
+        return accessToken ?: throw IllegalStateException("Make sure user is authenticated")
+    }
+
     fun getCurrentUser(): FirebaseUser {
         return auth.currentUser
             ?: throw IllegalStateException("Call this only when user is authenticated")

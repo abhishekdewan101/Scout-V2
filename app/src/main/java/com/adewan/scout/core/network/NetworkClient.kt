@@ -2,6 +2,7 @@ package com.adewan.scout.core.network
 
 import com.adewan.scout.BuildConfig
 import com.adewan.scout.core.network.models.IgdbAuthentication
+import com.adewan.scout.core.network.models.IgdbGame
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.android.Android
@@ -9,7 +10,9 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -50,6 +53,20 @@ class NetworkClient {
         val qualifiedUrl =
             "$igdbAuthenticationEndpoint?client_id=${BuildConfig.clientId}&client_secret=${BuildConfig.clientSecret}&grant_type=client_credentials"
         return client.post(url = Url(qualifiedUrl)).body()
+    }
+
+    suspend fun getGameInfoRowsForQuery(
+        accessToken: String,
+        query: String
+    ): List<IgdbGame> {
+        return client
+            .post(url = Url(gameEndpoint)) {
+                header("Client-ID", BuildConfig.clientId)
+                header("Authorization", "Bearer $accessToken")
+                header("Content-Type", "application/json")
+                setBody(query)
+            }
+            .body()
     }
 
 }

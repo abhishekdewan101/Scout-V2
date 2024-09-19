@@ -31,7 +31,7 @@ fun OnboardingNavigationHost(viewModel: PreferenceSelectionViewModel = koinViewM
     var startDestinationSet by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel) {
-        if (viewModel.isOnboardingDone()) {
+        if (viewModel.isOnboardingDone() && viewModel.isAccessTokenSet()) {
             startDestination = OnboardingDestinations.MainNavigationView.route
         }
         startDestinationSet = true

@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -26,7 +27,7 @@ fun MainTabbedView() {
     val currentDestination = navBackStackEntry?.destination
 
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-        NavigationBar(tonalElevation = 0.dp) {
+        NavigationBar(tonalElevation = 0.dp, containerColor = Color.Transparent) {
             TabDestinations.entries.forEach { destination ->
                 NavigationBarItem(selected = false, icon = {
                     if (currentDestination?.route == destination.route) {

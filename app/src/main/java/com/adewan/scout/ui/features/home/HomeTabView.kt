@@ -54,7 +54,6 @@ fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel()) {
                 .verticalScroll(rememberScrollState())
         ) {
             Header(viewModel, modalBottomSheetHeight)
-            
         }
     }
 }
@@ -67,7 +66,8 @@ private fun Header(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = defaultHorizontalPadding),
+            .padding(horizontal = defaultHorizontalPadding)
+            .padding(top = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

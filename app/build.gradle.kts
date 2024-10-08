@@ -38,6 +38,11 @@ android {
 
         buildConfigField("String", "clientId", "\"${System.getenv("IGDB_CLIENT_ID")}\"")
         buildConfigField("String", "clientSecret", "\"${System.getenv("IGDB_CLIENT_SECRET")}\"")
+        buildConfigField(
+            "String",
+            "GOOGLE_OAUTH_CREDS",
+            "\"${System.getenv("GOOGLE_OAUTH_CREDS")}\""
+        )
 
         signingConfigs {
             getByName("debug") {
@@ -56,6 +61,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -67,12 +73,6 @@ android {
                 artifactType = "APK"
                 groups = "dev-testers"
             }
-
-            buildConfigField(
-                "String",
-                "GOOGLE_OAUTH_CREDS",
-                "\"${System.getenv("GOOGLE_OAUTH_CREDS")}\""
-            )
         }
     }
     compileOptions {

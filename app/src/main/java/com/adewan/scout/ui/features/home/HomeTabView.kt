@@ -1,16 +1,23 @@
 package com.adewan.scout.ui.features.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -33,13 +40,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.BrushPainter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.adewan.scout.ui.theme.defaultHorizontalPadding
 import com.adewan.scout.ui.theme.poppinsFont
+import com.adewan.scout.utils.buildReleaseDateString
+import com.adewan.scout.utils.twoDecimalPlaces
+import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -48,12 +64,116 @@ fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel()) {
 
     BoxWithConstraints {
         val modalBottomSheetHeight = constraints.maxHeight.dp / 2f
+        val maxWidth = maxWidth
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = spacedBy(20.dp)
         ) {
-            Header(viewModel, modalBottomSheetHeight)
+            Header(viewModel = viewModel, modalBottomSheetHeight = modalBottomSheetHeight)
+            if (viewModel.viewState is HomeViewState.Loading) {
+                LoadingSkeleton(width = maxWidth / 1.75f)
+            }
+            if (viewModel.viewState is HomeViewState.Success) {
+                GameShowcasePager(viewModel = viewModel, width = maxWidth / 1.75f)
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingSkeleton(width: Dp) {
+    Row(
+        modifier = Modifier
+            .shimmer()
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        repeat(3) {
+            Box(
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(brush = imagePlaceHolder.brush)
+                    .width(width)
+                    .aspectRatio(3 / 4f)
+            )
+        }
+    }
+}
+
+
+val imagePlaceHolder by lazy {
+    BrushPainter(
+        Brush.linearGradient(
+            listOf(
+                Color(color = 0xFF2196F3),
+                Color(color = 0xFFE91E63),
+            )
+        )
+    )
+}
+
+
+@Composable
+private fun GameShowcasePager(
+    viewModel: HomeTabViewModel,
+    width: Dp
+) {
+    val pagerState = rememberPagerState(pageCount = { viewModel.currentListTypeGames.size })
+
+    LaunchedEffect(viewModel.currentListType) {
+        pagerState.scrollToPage(0)
+    }
+
+    HorizontalPager(
+        state = pagerState,
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth(),
+        pageSize = PageSize.Fixed(width + 10.dp)
+    ) { page ->
+        val game = viewModel.currentListTypeGames[page]
+        Box {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(game.poster?.smallImage)
+                    .crossfade(true)
+                    .build(),
+                placeholder = imagePlaceHolder,
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.medium)
+                    .width(width)
+                    .aspectRatio(3 / 4f)
+                    .clickable { }
+            )
+            when {
+                game.rating != null -> {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 5.dp, top = 5.dp)
+                            .clip(RoundedCornerShape(15.dp))
+                            .background(Color.Black.copy(alpha = 0.5f))
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(game.rating.twoDecimalPlaces())
+                    }
+                }
+
+                game.firstReleaseDate != null -> {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 5.dp, top = 5.dp)
+                            .clip(RoundedCornerShape(15.dp))
+                            .background(Color.Black.copy(alpha = 0.5f))
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(game.firstReleaseDate.buildReleaseDateString())
+                    }
+                }
+            }
         }
     }
 }

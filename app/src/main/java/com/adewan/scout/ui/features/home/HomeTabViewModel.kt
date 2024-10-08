@@ -17,6 +17,8 @@ class HomeTabViewModel(private val gameRepository: GameRepository) : ViewModel()
     var currentListType by mutableStateOf(GameListType.UPCOMING)
         private set
 
+    var currentListTypeGames by mutableStateOf<List<IgdbGame>>(emptyList())
+
     fun getShowcaseGames() {
         viewModelScope.launch {
             val asyncUpcoming = async { gameRepository.getUpcomingGames() }
@@ -31,15 +33,18 @@ class HomeTabViewModel(private val gameRepository: GameRepository) : ViewModel()
                         GameListType.RECENTLY_RELEASED to asyncRecentlyReleased.await()
                     )
                 )
+
+            currentListTypeGames = getGamesByListType(currentListType)
         }
     }
 
     fun changeListType(gameListType: GameListType) {
         currentListType = gameListType
+        currentListTypeGames = getGamesByListType(gameListType)
     }
 
-    fun getGamesByListType(): List<IgdbGame> {
-        return (viewState as HomeViewState.Success).games.getOrDefault(currentListType, emptyList())
+    private fun getGamesByListType(listType: GameListType): List<IgdbGame> {
+        return (viewState as HomeViewState.Success).games.getOrDefault(listType, emptyList())
     }
 }
 

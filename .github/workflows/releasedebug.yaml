@@ -58,6 +58,8 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           GOOGLE_OAUTH_CREDS: ${{ secrets.GOOGLE_OAUTH_CREDS }}
+          IGDB_CLIENT_ID: ${{secrets.IGDB_CLIENT_ID}}
+          IGDB_CLIENT_SECRET: ${{secrets.IGDB_CLIENT_SECRET}}
         run: ./gradlew assembleDebug
 
       - name: Upload Debug APK to Artifacts
@@ -74,4 +76,6 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           GOOGLE_OAUTH_CREDS: ${{ secrets.GOOGLE_OAUTH_CREDS }}
+          IGDB_CLIENT_ID: ${{secrets.IGDB_CLIENT_ID}}
+          IGDB_CLIENT_SECRET: ${{secrets.IGDB_CLIENT_SECRET}}
         run: ./gradlew assembleDebug appDistributionUploadDebug

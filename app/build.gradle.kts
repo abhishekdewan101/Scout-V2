@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.firebase.app.distribution)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.crashlytics.plugin)
 }
 
 val versionMajor = 0
@@ -110,6 +111,9 @@ dependencies {
     //firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.crashlytics)
+
+
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)

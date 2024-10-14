@@ -158,7 +158,11 @@ private fun GameShowcasePager(
                             .background(Color.Black.copy(alpha = 0.5f))
                             .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
-                        Text(game.rating.twoDecimalPlaces())
+                        Text(
+                            game.rating.twoDecimalPlaces(),
+                            fontFamily = poppinsFont,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
 
@@ -170,7 +174,11 @@ private fun GameShowcasePager(
                             .background(Color.Black.copy(alpha = 0.5f))
                             .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
-                        Text(game.firstReleaseDate.buildReleaseDateString())
+                        Text(
+                            game.firstReleaseDate.buildReleaseDateString(),
+                            fontFamily = poppinsFont,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }

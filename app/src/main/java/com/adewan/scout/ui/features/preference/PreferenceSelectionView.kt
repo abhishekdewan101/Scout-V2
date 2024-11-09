@@ -220,6 +220,18 @@ private fun PreferenceBottomSheetContent(
 
 @Preview
 @Composable
+fun PreferenceSelectionTextPreview() {
+    PreferenceBottomSheetContent(
+        screenHeight = 1000,
+        platformSelected = true,
+        genresSelected = false,
+        showPlatformSelection = {},
+        {},{},{}
+    )
+}
+
+@Preview
+@Composable
 fun PreferenceSelectionViewPreview() {
     PreferenceSelectionView(
         showPlatformSelection = {},

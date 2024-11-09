@@ -59,7 +59,7 @@ import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel()) {
+fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel(), onImageShown: (String) -> Unit) {
     LaunchedEffect(viewModel) { viewModel.getShowcaseGames() }
 
     BoxWithConstraints {
@@ -76,7 +76,11 @@ fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel()) {
                 LoadingSkeleton(width = maxWidth / 1.75f)
             }
             if (viewModel.viewState is HomeViewState.Success) {
-                GameShowcasePager(viewModel = viewModel, width = maxWidth / 1.75f)
+                GameShowcasePager(
+                    viewModel = viewModel,
+                    width = maxWidth / 1.75f,
+                    onImageShown = onImageShown
+                )
             }
         }
     }
@@ -119,13 +123,17 @@ val imagePlaceHolder by lazy {
 @Composable
 private fun GameShowcasePager(
     viewModel: HomeTabViewModel,
-    width: Dp
+    width: Dp,
+    onImageShown: (String) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { viewModel.currentListTypeGames.size })
 
     LaunchedEffect(viewModel.currentListType) {
         pagerState.scrollToPage(0)
     }
+
+
+    onImageShown(viewModel.currentListTypeGames[pagerState.currentPage].poster?.largeImage.toString())
 
     HorizontalPager(
         state = pagerState,

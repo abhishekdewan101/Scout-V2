@@ -1,6 +1,7 @@
 package com.adewan.scout.ui.features.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -80,6 +82,38 @@ fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel(), onImageShown: (St
                     viewModel = viewModel,
                     width = maxWidth / 1.75f,
                     onImageShown = onImageShown
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = defaultHorizontalPadding)
+                    .padding(top = 20.dp)
+                    .padding(horizontal = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Most Anticipated",
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center,
+                    fontFamily = poppinsFont,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                )
+                Icon(Icons.Outlined.Tune,
+                    "",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .clickable { }
+                        .border(
+                            1.dp,
+                            Color.White,
+                            shape = RoundedCornerShape(20.dp)
+                        )
+                        .padding(vertical = 5.dp, horizontal = 10.dp)
                 )
             }
         }

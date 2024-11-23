@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.adewan.scout.core.auth.FirebaseAuthenticationRepository
 import com.adewan.scout.core.game.GameRepository
 import com.adewan.scout.core.genres.GenreRepository
+import com.adewan.scout.core.local.DataStoreRepository
 import com.adewan.scout.core.network.NetworkClient
 import com.adewan.scout.core.platform.PlatformRepository
 import com.adewan.scout.ui.features.auth.LoginViewModel
@@ -30,13 +31,14 @@ val appModule = module {
     single { PlatformRepository(resources = get<Context>().resources) }
     single { GenreRepository(resources = get<Context>().resources) }
     single { GameRepository(networkClient = get(), firebaseAuthenticationRepository = get()) }
+    single { DataStoreRepository(dataStore = get()) }
     single<DataStore<Preferences>> { get<Context>().dataStore }
 
     viewModel { LoginViewModel(authenticationRepository = get()) }
     viewModel {
         PreferenceSelectionViewModel(
             platformRepository = get(),
-            dataStore = get(),
+            dataStoreRepository = get(),
             genreRepository = get(),
             authenticationRepository = get()
         )

@@ -1,26 +1,25 @@
 package com.adewan.scout.ui.features.preference
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import com.adewan.scout.core.auth.FirebaseAuthenticationRepository
 import com.adewan.scout.core.genres.GenreRepository
+import com.adewan.scout.core.local.DataStoreRepository
 import com.adewan.scout.core.models.Genre
 import com.adewan.scout.core.models.Platform
 import com.adewan.scout.core.platform.PlatformRepository
-import kotlinx.coroutines.flow.first
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+
+const val SELECTED_GENRES_KEY = "selected_genres"
+
+private const val SELECTED_PLATFORMS_KEY = "selected_platforms"
 
 class PreferenceSelectionViewModel(
     private val platformRepository: PlatformRepository,
     private val genreRepository: GenreRepository,
+    private val dataStoreRepository: DataStoreRepository,
     private val authenticationRepository: FirebaseAuthenticationRepository,
-    private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
 
     val platforms = mutableStateListOf<Platform>()
@@ -35,40 +34,34 @@ class PreferenceSelectionViewModel(
     }
 
     suspend fun getSelectedGenres(): List<Genre> {
-        val data = dataStore.data.first()
-        val key = stringPreferencesKey("selected_genres")
-        val existingSelectedGenres = data.toPreferences()[key] ?: return emptyList()
-        return genreRepository.getGenresFromString(existingSelectedGenres)
+        val selectedGenres =
+            dataStoreRepository.getStringPreference(SELECTED_GENRES_KEY) ?: return emptyList()
+        return genreRepository.getGenresFromString(selectedGenres)
     }
 
     suspend fun saveSelectedGenres(genres: List<Genre>) {
-        dataStore.edit {
-            it[stringPreferencesKey("selected_genres")] = Json.encodeToString(genres)
-        }
+        dataStoreRepository.setStringPreference(SELECTED_GENRES_KEY, Json.encodeToString(genres))
     }
 
     suspend fun getSelectedPlatforms(): List<Platform> {
-        val data = dataStore.data.first()
-        val key = stringPreferencesKey("selected_platforms")
-        val existingSelectedPlatforms = data.toPreferences()[key] ?: return emptyList()
-        return platformRepository.getPlatformsFromString(existingSelectedPlatforms)
+        val selectedPlatforms =
+            dataStoreRepository.getStringPreference(SELECTED_PLATFORMS_KEY) ?: return emptyList()
+        return platformRepository.getPlatformsFromString(selectedPlatforms)
     }
 
     suspend fun saveSelectedPlatforms(platforms: List<Platform>) {
-        dataStore.edit {
-            it[stringPreferencesKey("selected_platforms")] = Json.encodeToString(platforms)
-        }
+        dataStoreRepository.setStringPreference(
+            SELECTED_PLATFORMS_KEY,
+            Json.encodeToString(platforms)
+        )
     }
 
     suspend fun setOnboardingDone() {
-        dataStore.edit {
-            it[booleanPreferencesKey("onboarding_done")] = true
-        }
+        dataStoreRepository.setBooleanPreference("onboarding_done", true)
     }
 
     suspend fun isOnboardingDone(): Boolean {
-        val data = dataStore.data.first()
-        return data.toPreferences()[booleanPreferencesKey("onboarding_done")] ?: false
+        return dataStoreRepository.getBooleanPreference("onboarding_done", true)
     }
 
     suspend fun isAccessTokenSet(): Boolean {

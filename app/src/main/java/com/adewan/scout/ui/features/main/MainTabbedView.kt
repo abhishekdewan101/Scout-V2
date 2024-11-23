@@ -75,7 +75,7 @@ fun MainTabbedView() {
                     .crossfade(true)
                     .build(),
                 contentDescription = "",
-                contentScale = ContentScale.FillHeight,
+                contentScale = ContentScale.None,
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.medium)
                     .fillMaxSize()

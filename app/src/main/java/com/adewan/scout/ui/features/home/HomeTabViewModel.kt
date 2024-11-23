@@ -22,14 +22,12 @@ class HomeTabViewModel(private val gameRepository: GameRepository) : ViewModel()
     fun getShowcaseGames() {
         viewModelScope.launch {
             val asyncUpcoming = async { gameRepository.getUpcomingGames() }
-            val asyncTopRated = async { gameRepository.getTopRatedGames() }
             val asyncRecentlyReleased = async { gameRepository.getRecentlyReleasedGames() }
 
             viewState =
                 HomeViewState.Success(
                     games = mapOf(
                         GameListType.UPCOMING to asyncUpcoming.await(),
-                        GameListType.TOP_RATED to asyncTopRated.await(),
                         GameListType.RECENTLY_RELEASED to asyncRecentlyReleased.await()
                     )
                 )
@@ -50,7 +48,6 @@ class HomeTabViewModel(private val gameRepository: GameRepository) : ViewModel()
 
 enum class GameListType(val label: String) {
     UPCOMING("Upcoming"),
-    TOP_RATED("Top Rated"),
     RECENTLY_RELEASED("Recently Released")
 }
 

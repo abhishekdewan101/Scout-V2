@@ -2,20 +2,19 @@ package com.adewan.scout.core.game
 
 import com.adewan.scout.core.auth.FirebaseAuthenticationRepository
 import com.adewan.scout.core.network.NetworkClient
-import com.adewan.scout.core.network.generateRecentlyReleasedQuery
-import com.adewan.scout.core.network.generateTopRatedQuery
-import com.adewan.scout.core.network.generateUpcomingQuery
+import com.adewan.scout.core.network.QueryGeneratorRepository
 import com.adewan.scout.core.network.models.IgdbGame
 
 class GameRepository(
     private val networkClient: NetworkClient,
-    private val firebaseAuthenticationRepository: FirebaseAuthenticationRepository
+    private val firebaseAuthenticationRepository: FirebaseAuthenticationRepository,
+    private val queryGeneratorRepository: QueryGeneratorRepository
 ) {
     suspend fun getUpcomingGames(): List<IgdbGame> {
         val accessToken = firebaseAuthenticationRepository.getCurrentAccessToken()
         return networkClient.getGameInfoRowsForQuery(
             accessToken = accessToken,
-            query = generateUpcomingQuery()
+            query = queryGeneratorRepository.generateUpcomingQuery()
         )
     }
 
@@ -23,7 +22,7 @@ class GameRepository(
         val accessToken = firebaseAuthenticationRepository.getCurrentAccessToken()
         return networkClient.getGameInfoRowsForQuery(
             accessToken = accessToken,
-            query = generateTopRatedQuery()
+            query = queryGeneratorRepository.generateTopRatedQuery()
         )
     }
 
@@ -31,7 +30,7 @@ class GameRepository(
         val accessToken = firebaseAuthenticationRepository.getCurrentAccessToken()
         return networkClient.getGameInfoRowsForQuery(
             accessToken = accessToken,
-            query = generateRecentlyReleasedQuery()
+            query = queryGeneratorRepository.generateRecentlyReleasedQuery()
         )
     }
 

@@ -13,7 +13,7 @@ import kotlinx.serialization.json.Json
 
 const val SELECTED_GENRES_KEY = "selected_genres"
 
-private const val SELECTED_PLATFORMS_KEY = "selected_platforms"
+const val SELECTED_PLATFORMS_KEY = "selected_platforms"
 
 class PreferenceSelectionViewModel(
     private val platformRepository: PlatformRepository,

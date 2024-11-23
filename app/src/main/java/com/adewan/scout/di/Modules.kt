@@ -9,6 +9,7 @@ import com.adewan.scout.core.game.GameRepository
 import com.adewan.scout.core.genres.GenreRepository
 import com.adewan.scout.core.local.DataStoreRepository
 import com.adewan.scout.core.network.NetworkClient
+import com.adewan.scout.core.network.QueryGeneratorRepository
 import com.adewan.scout.core.platform.PlatformRepository
 import com.adewan.scout.ui.features.auth.LoginViewModel
 import com.adewan.scout.ui.features.home.HomeTabViewModel
@@ -30,7 +31,20 @@ val appModule = module {
     }
     single { PlatformRepository(resources = get<Context>().resources) }
     single { GenreRepository(resources = get<Context>().resources) }
-    single { GameRepository(networkClient = get(), firebaseAuthenticationRepository = get()) }
+    single {
+        GameRepository(
+            networkClient = get(),
+            queryGeneratorRepository = get(),
+            firebaseAuthenticationRepository = get()
+        )
+    }
+    single {
+        QueryGeneratorRepository(
+            dataStoreRepository = get(),
+            platformRepository = get(),
+            genreRepository = get(),
+        )
+    }
     single { DataStoreRepository(dataStore = get()) }
     single<DataStore<Preferences>> { get<Context>().dataStore }
 

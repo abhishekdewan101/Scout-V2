@@ -1,5 +1,6 @@
 package com.adewan.scout.ui.features.home
 
+import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,8 +51,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.palette.graphics.Palette
+import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.adewan.scout.ui.theme.defaultHorizontalPadding
 import com.adewan.scout.ui.theme.poppinsFont
 import com.adewan.scout.utils.buildReleaseDateString
@@ -60,7 +64,7 @@ import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel(), onImageShown: (String) -> Unit) {
+fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel(), onImageShown: (Color) -> Unit) {
     LaunchedEffect(viewModel) { viewModel.getShowcaseGames() }
 
     BoxWithConstraints {
@@ -157,7 +161,7 @@ val imagePlaceHolder by lazy {
 private fun GameShowcasePager(
     viewModel: HomeTabViewModel,
     width: Dp,
-    onImageShown: (String) -> Unit
+    onImageShown: (Color) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { viewModel.currentListTypeGames.size })
 
@@ -165,8 +169,32 @@ private fun GameShowcasePager(
         pagerState.scrollToPage(0)
     }
 
-
-    onImageShown(viewModel.currentListTypeGames[pagerState.currentPage].poster?.largeImage.toString())
+    val context = LocalContext.current
+    LaunchedEffect(pagerState.currentPage) {
+        val imageLoader = ImageLoader.Builder(context).build()
+        val imageRequest = ImageRequest.Builder(context)
+            .size(600, 600)
+            .data(viewModel.currentListTypeGames[pagerState.currentPage].poster?.largeImage)
+            .allowHardware(false)
+            .build()
+        val result = imageLoader.execute(imageRequest)
+        val bitmap = if (result is SuccessResult) {
+            (result.drawable as BitmapDrawable).bitmap
+        } else {
+            null
+        }
+        if (bitmap != null) {
+            Palette.from(bitmap).generate { colors ->
+                if (colors != null) {
+                    var color = colors.getDominantColor(0)
+                    if (color == 0) {
+                        color = colors.getVibrantColor(0)
+                    }
+                    onImageShown(Color(color))
+                }
+            }
+        }
+    }
 
     HorizontalPager(
         state = pagerState,

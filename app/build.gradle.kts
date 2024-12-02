@@ -137,6 +137,7 @@ dependencies {
     implementation(libs.logcat)
     implementation(libs.coil.compose)
     implementation(libs.compose.shimmer)
+    implementation(libs.androidx.palette)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -66,6 +66,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel(), onImageShown: (Color) -> Unit) {
     LaunchedEffect(viewModel) { viewModel.getShowcaseGames() }
+    val homeTabColor = LocalHomeTabColors.current
 
     BoxWithConstraints {
         val modalBottomSheetHeight = constraints.maxHeight.dp / 2f
@@ -103,17 +104,17 @@ fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel(), onImageShown: (Co
                     textAlign = TextAlign.Center,
                     fontFamily = poppinsFont,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.White,
+                    color = homeTabColor.contrastColor,
                 )
                 Icon(Icons.Outlined.Tune,
                     "",
-                    tint = Color.White,
+                    tint = homeTabColor.contrastColor,
                     modifier = Modifier
                         .clip(RoundedCornerShape(20.dp))
                         .clickable { }
                         .border(
                             1.dp,
-                            Color.White,
+                            homeTabColor.contrastColor,
                             shape = RoundedCornerShape(20.dp)
                         )
                         .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -163,6 +164,7 @@ private fun GameShowcasePager(
     width: Dp,
     onImageShown: (Color) -> Unit
 ) {
+    val homeTabColor = LocalHomeTabColors.current
     val pagerState = rememberPagerState(pageCount = { viewModel.currentListTypeGames.size })
 
     LaunchedEffect(viewModel.currentListType) {
@@ -230,7 +232,8 @@ private fun GameShowcasePager(
                         Text(
                             game.rating.twoDecimalPlaces(),
                             fontFamily = poppinsFont,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = homeTabColor.contrastColor
                         )
                     }
                 }
@@ -246,7 +249,8 @@ private fun GameShowcasePager(
                         Text(
                             game.firstReleaseDate.buildReleaseDateString(),
                             fontFamily = poppinsFont,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = homeTabColor.contrastColor
                         )
                     }
                 }
@@ -260,6 +264,7 @@ private fun Header(
     viewModel: HomeTabViewModel,
     modalBottomSheetHeight: Dp
 ) {
+    val homeTabColor = LocalHomeTabColors.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -276,6 +281,7 @@ private fun Header(
         Icon(
             Icons.Default.Search,
             "",
+            tint = homeTabColor.contrastColor,
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
                 .clickable { }
@@ -292,10 +298,12 @@ private fun GameListButton(
     onGameListSelect: (GameListType) -> Unit
 ) {
     var listSelectionOpen by remember { mutableStateOf(false) }
+    val homeTabColor = LocalHomeTabColors.current
 
     if (listSelectionOpen) {
         ModalBottomSheet(
             sheetState = rememberModalBottomSheetState(confirmValueChange = { false }),
+            containerColor = homeTabColor.backgroundColor,
             onDismissRequest = { listSelectionOpen = listSelectionOpen.not() }) {
             Column(
                 modifier = Modifier
@@ -317,7 +325,7 @@ private fun GameListButton(
                             textAlign = TextAlign.Center,
                             fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color.White,
+                            color = homeTabColor.backgroundColor,
                         )
                     }
                 }
@@ -341,12 +349,12 @@ private fun GameListButton(
             textAlign = TextAlign.Center,
             fontFamily = poppinsFont,
             fontWeight = FontWeight.SemiBold,
-            color = Color.White,
+            color = homeTabColor.contrastColor,
         )
         if (listSelectionOpen) {
-            Icon(Icons.Default.KeyboardArrowUp, "")
+            Icon(Icons.Default.KeyboardArrowUp, "", tint = homeTabColor.contrastColor)
         } else {
-            Icon(Icons.Default.KeyboardArrowDown, "")
+            Icon(Icons.Default.KeyboardArrowDown, "", tint = homeTabColor.contrastColor)
         }
     }
 }

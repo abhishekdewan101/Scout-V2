@@ -11,3 +11,11 @@ fun Long?.buildReleaseDateString(): String {
     val formattedDate = formatter.format(instant)
     return formattedDate
 }
+
+fun Long?.buildReleaseYearString(): String {
+    if (this == null) return "NA"
+    val instant = Instant.ofEpochSecond(this)
+    val formatter = DateTimeFormatter.ofPattern("yyyy").withZone(ZoneId.systemDefault())
+    val formattedDate = formatter.format(instant)
+    return formattedDate
+}

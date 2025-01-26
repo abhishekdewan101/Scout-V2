@@ -56,6 +56,8 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.adewan.scout.ui.components.GamePoster
+import com.adewan.scout.ui.components.GameRow
+import com.adewan.scout.ui.components.buildGameRowSubTitle
 import com.adewan.scout.ui.components.imagePlaceHolder
 import com.adewan.scout.ui.theme.defaultHorizontalPadding
 import com.adewan.scout.ui.theme.poppinsFont
@@ -87,40 +89,65 @@ fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel(), onImageShown: (Co
                     onImageShown = onImageShown
                 )
             }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = defaultHorizontalPadding)
-                    .padding(top = 20.dp)
-                    .padding(horizontal = 10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    "All Time Best",
-                    style = MaterialTheme.typography.headlineSmall,
-                    textAlign = TextAlign.Center,
-                    fontFamily = poppinsFont,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = homeTabColor.contrastColor,
-                )
-                Icon(Icons.Outlined.Tune,
-                    "",
-                    tint = homeTabColor.contrastColor,
+            AllTimeBestListHeader(homeTabColor)
+            if (viewModel.viewState is HomeViewState.Success) {
+                Column(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .clickable { }
-                        .border(
-                            1.dp,
-                            homeTabColor.contrastColor,
-                            shape = RoundedCornerShape(20.dp)
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 15.dp),
+                    verticalArrangement = spacedBy(20.dp)
+                ) {
+                    (viewModel.viewState as HomeViewState.Success).allTimeBestGames.forEach { game ->
+                        GameRow(
+                            posterUrl = game.poster?.smallImage ?: "",
+                            title = game.name,
+                            subTitle = game.buildGameRowSubTitle(),
+                            platform = game.platforms.take(3)
+                                .joinToString(separator = ",") { it.name },
+                            index = 0,
+                            rating = game.rating.twoDecimalPlaces(),
+                            textColor = homeTabColor.contrastColor
                         )
-                        .padding(vertical = 5.dp, horizontal = 10.dp)
-                )
+                    }
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun AllTimeBestListHeader(homeTabColor: HomeTabColor) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = defaultHorizontalPadding)
+            .padding(top = 20.dp)
+            .padding(horizontal = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            "All Time Best",
+            style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center,
+            fontFamily = poppinsFont,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = homeTabColor.contrastColor,
+        )
+        Icon(Icons.Outlined.Tune,
+            "",
+            tint = homeTabColor.contrastColor,
+            modifier = Modifier
+                .clip(RoundedCornerShape(20.dp))
+                .clickable { }
+                .border(
+                    1.dp,
+                    homeTabColor.contrastColor,
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(vertical = 5.dp, horizontal = 10.dp)
+        )
     }
 }
 
@@ -152,7 +179,6 @@ private fun GameShowcasePager(
     width: Dp,
     onImageShown: (Color) -> Unit
 ) {
-    val homeTabColor = LocalHomeTabColors.current
     val pagerState = rememberPagerState(pageCount = { viewModel.currentListTypeGames.size })
 
     LaunchedEffect(viewModel.currentListType) {

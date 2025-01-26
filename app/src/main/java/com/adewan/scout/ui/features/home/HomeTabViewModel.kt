@@ -23,13 +23,15 @@ class HomeTabViewModel(private val gameRepository: GameRepository) : ViewModel()
         viewModelScope.launch {
             val asyncUpcoming = async { gameRepository.getUpcomingGames() }
             val asyncRecentlyReleased = async { gameRepository.getRecentlyReleasedGames() }
+            val asyncAllTimeBest = async { gameRepository.getTopRatedGames() }
 
             viewState =
                 HomeViewState.Success(
                     games = mapOf(
                         GameListType.UPCOMING to asyncUpcoming.await(),
                         GameListType.RECENTLY_RELEASED to asyncRecentlyReleased.await()
-                    )
+                    ),
+                    allTimeBestGames = asyncAllTimeBest.await()
                 )
 
             currentListTypeGames = getGamesByListType(currentListType)
@@ -53,5 +55,8 @@ enum class GameListType(val label: String) {
 
 sealed interface HomeViewState {
     data object Loading : HomeViewState
-    data class Success(val games: Map<GameListType, List<IgdbGame>>) : HomeViewState
+    data class Success(
+        val games: Map<GameListType, List<IgdbGame>>,
+        val allTimeBestGames: List<IgdbGame>
+    ) : HomeViewState
 }

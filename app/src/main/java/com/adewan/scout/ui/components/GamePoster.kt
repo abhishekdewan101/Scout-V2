@@ -73,7 +73,7 @@ fun GamePoster(
                     modifier = Modifier.padding(10.dp),
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = poppinsFont,
-                    fontSize = 16.sp,
+                    fontSize = 12.sp,
                     color = Color.White,
                 )
             }

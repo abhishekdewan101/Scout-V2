@@ -102,7 +102,7 @@ fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel(), onImageShown: (Co
                     style = MaterialTheme.typography.headlineSmall,
                     textAlign = TextAlign.Center,
                     fontFamily = poppinsFont,
-                    fontSize = 32.sp,
+                    fontSize = 28.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = homeTabColor.contrastColor,
                 )
@@ -223,7 +223,7 @@ private fun Header(viewModel: HomeTabViewModel) {
             "",
             tint = homeTabColor.contrastColor,
             modifier = Modifier
-                .size(32.dp)
+                .size(28.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .clickable { }
         )
@@ -290,7 +290,7 @@ private fun GameListButton(
             style = TextStyle(
                 fontFamily = poppinsFont,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 32.sp,
+                fontSize = 28.sp,
                 textAlign = TextAlign.Center
             ),
             color = homeTabColor.contrastColor,
@@ -298,7 +298,7 @@ private fun GameListButton(
         Icon(
             if (listSelectionOpen) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
             "",
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(28.dp),
             tint = homeTabColor.contrastColor
         )
     }

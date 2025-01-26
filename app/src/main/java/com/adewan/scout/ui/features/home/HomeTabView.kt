@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -42,20 +43,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.BrushPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.palette.graphics.Palette
 import coil.ImageLoader
-import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.request.SuccessResult
+import com.adewan.scout.ui.components.GamePoster
+import com.adewan.scout.ui.components.imagePlaceHolder
 import com.adewan.scout.ui.theme.defaultHorizontalPadding
 import com.adewan.scout.ui.theme.poppinsFont
 import com.adewan.scout.utils.buildReleaseDateString
@@ -69,22 +70,20 @@ fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel(), onImageShown: (Co
     val homeTabColor = LocalHomeTabColors.current
 
     BoxWithConstraints {
-        val modalBottomSheetHeight = constraints.maxHeight.dp / 2f
         val maxWidth = maxWidth
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = spacedBy(20.dp)
         ) {
-            Header(viewModel = viewModel, modalBottomSheetHeight = modalBottomSheetHeight)
+            Header(viewModel = viewModel)
             if (viewModel.viewState is HomeViewState.Loading) {
-                LoadingSkeleton(width = maxWidth / 1.75f)
+                LoadingSkeleton(width = maxWidth / 2f)
             }
             if (viewModel.viewState is HomeViewState.Success) {
                 GameShowcasePager(
                     viewModel = viewModel,
-                    width = maxWidth / 1.75f,
+                    width = maxWidth / 2f,
                     onImageShown = onImageShown
                 )
             }
@@ -99,10 +98,11 @@ fun HomeTabView(viewModel: HomeTabViewModel = koinViewModel(), onImageShown: (Co
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "Most Anticipated",
+                    "All Time Best",
                     style = MaterialTheme.typography.headlineSmall,
                     textAlign = TextAlign.Center,
                     fontFamily = poppinsFont,
+                    fontSize = 32.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = homeTabColor.contrastColor,
                 )
@@ -143,18 +143,6 @@ fun LoadingSkeleton(width: Dp) {
             )
         }
     }
-}
-
-
-val imagePlaceHolder by lazy {
-    BrushPainter(
-        Brush.linearGradient(
-            listOf(
-                Color(color = 0xFF2196F3),
-                Color(color = 0xFFE91E63),
-            )
-        )
-    )
 }
 
 
@@ -201,81 +189,33 @@ private fun GameShowcasePager(
     HorizontalPager(
         state = pagerState,
         contentPadding = PaddingValues(horizontal = 16.dp),
-        modifier = Modifier.fillMaxWidth(),
-        pageSize = PageSize.Fixed(width + 10.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 15.dp),
+        pageSize = PageSize.Fixed(width + 15.dp)
     ) { page ->
         val game = viewModel.currentListTypeGames[page]
-        Box {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(game.poster?.smallImage)
-                    .crossfade(true)
-                    .build(),
-                placeholder = imagePlaceHolder,
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.medium)
-                    .width(width)
-                    .aspectRatio(3 / 4f)
-                    .clickable { }
-            )
-            when {
-                game.rating != null -> {
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 5.dp, top = 5.dp)
-                            .clip(RoundedCornerShape(15.dp))
-                            .background(Color.Black.copy(alpha = 0.5f))
-                            .padding(horizontal = 10.dp, vertical = 4.dp)
-                    ) {
-                        Text(
-                            game.rating.twoDecimalPlaces(),
-                            fontFamily = poppinsFont,
-                            fontWeight = FontWeight.SemiBold,
-                            color = homeTabColor.contrastColor
-                        )
-                    }
-                }
-
-                game.firstReleaseDate != null -> {
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 5.dp, top = 5.dp)
-                            .clip(RoundedCornerShape(15.dp))
-                            .background(Color.Black.copy(alpha = 0.5f))
-                            .padding(horizontal = 10.dp, vertical = 4.dp)
-                    ) {
-                        Text(
-                            game.firstReleaseDate.buildReleaseDateString(),
-                            fontFamily = poppinsFont,
-                            fontWeight = FontWeight.SemiBold,
-                            color = homeTabColor.contrastColor
-                        )
-                    }
-                }
-            }
-        }
+        GamePoster(
+            posterUrl = game.poster?.smallImage ?: "",
+            width = width,
+            accessoryText = game.rating.twoDecimalPlaces()
+                ?: game.firstReleaseDate?.buildReleaseDateString()
+        )
     }
 }
 
 @Composable
-private fun Header(
-    viewModel: HomeTabViewModel,
-    modalBottomSheetHeight: Dp
-) {
+private fun Header(viewModel: HomeTabViewModel) {
     val homeTabColor = LocalHomeTabColors.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = defaultHorizontalPadding)
-            .padding(top = 20.dp),
+            .padding(horizontal = defaultHorizontalPadding),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         GameListButton(
             currentListType = viewModel.currentListType,
-            modalBottomSheetHeight = modalBottomSheetHeight,
             onGameListSelect = viewModel::changeListType
         )
         Icon(
@@ -283,9 +223,9 @@ private fun Header(
             "",
             tint = homeTabColor.contrastColor,
             modifier = Modifier
+                .size(32.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .clickable { }
-                .padding(10.dp)
         )
     }
 }
@@ -294,7 +234,6 @@ private fun Header(
 @Composable
 private fun GameListButton(
     currentListType: GameListType,
-    modalBottomSheetHeight: Dp,
     onGameListSelect: (GameListType) -> Unit
 ) {
     var listSelectionOpen by remember { mutableStateOf(false) }
@@ -325,7 +264,9 @@ private fun GameListButton(
                             textAlign = TextAlign.Center,
                             fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
-                            color = homeTabColor.backgroundColor,
+                            color = if (it == currentListType) homeTabColor.contrastColor else homeTabColor.contrastColor.copy(
+                                alpha = 0.5f
+                            ),
                         )
                     }
                 }
@@ -345,16 +286,20 @@ private fun GameListButton(
         horizontalArrangement = spacedBy(5.dp)
     ) {
         Text(
-            currentListType.label, style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Center,
-            fontFamily = poppinsFont,
-            fontWeight = FontWeight.SemiBold,
+            currentListType.label,
+            style = TextStyle(
+                fontFamily = poppinsFont,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 32.sp,
+                textAlign = TextAlign.Center
+            ),
             color = homeTabColor.contrastColor,
         )
-        if (listSelectionOpen) {
-            Icon(Icons.Default.KeyboardArrowUp, "", tint = homeTabColor.contrastColor)
-        } else {
-            Icon(Icons.Default.KeyboardArrowDown, "", tint = homeTabColor.contrastColor)
-        }
+        Icon(
+            if (listSelectionOpen) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+            "",
+            modifier = Modifier.size(32.dp),
+            tint = homeTabColor.contrastColor
+        )
     }
 }

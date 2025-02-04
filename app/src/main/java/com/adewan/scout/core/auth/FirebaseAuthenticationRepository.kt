@@ -106,6 +106,10 @@ class FirebaseAuthenticationRepository(
             return null
         }
     }
+
+    fun logout() {
+        auth.signOut()
+    }
 }
 
 private fun IgdbAuthentication.isValid(): Boolean {

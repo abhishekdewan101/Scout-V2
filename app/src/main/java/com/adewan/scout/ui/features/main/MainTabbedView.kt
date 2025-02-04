@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.adewan.scout.ui.features.home.HomeTabColor
 import com.adewan.scout.ui.features.home.HomeTabView
 import com.adewan.scout.ui.features.home.LocalHomeTabColors
+import com.adewan.scout.ui.features.profile.ProfileTabView
 import com.adewan.scout.utils.getContrastingColor
 
 @Composable
@@ -42,41 +43,43 @@ fun MainTabbedView() {
         )
     ) {
         val homeTabColor = LocalHomeTabColors.current
-        Scaffold(modifier = Modifier
-            .fillMaxSize(), containerColor = currentBackgroundColor, bottomBar = {
-            NavigationBar(tonalElevation = 0.dp, containerColor = Color.Transparent) {
-                TabDestinations.entries.forEach { destination ->
-                    NavigationBarItem(selected = false, icon = {
-                        if (currentDestination?.route == destination.route) {
-                            Icon(
-                                painter = painterResource(destination.selectedIcon),
-                                "",
-                                modifier = Modifier.size(24.dp)
-                            )
-                        } else {
-                            Icon(
-                                painter = painterResource(destination.icon),
-                                "",
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }, onClick = {
-                        navController.navigate(destination.route) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
+        Scaffold(
+            modifier = Modifier
+                .fillMaxSize(), containerColor = currentBackgroundColor, bottomBar = {
+                NavigationBar(tonalElevation = 0.dp, containerColor = Color.Transparent) {
+                    TabDestinations.entries.forEach { destination ->
+                        NavigationBarItem(
+                            selected = false, icon = {
+                            if (currentDestination?.route == destination.route) {
+                                Icon(
+                                    painter = painterResource(destination.selectedIcon),
+                                    "",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            } else {
+                                Icon(
+                                    painter = painterResource(destination.icon),
+                                    "",
+                                    modifier = Modifier.size(24.dp)
+                                )
                             }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = homeTabColor.contrastColor,
-                            unselectedIconColor = homeTabColor.contrastColor.copy(alpha = 0.5f)
+                        }, onClick = {
+                            navController.navigate(destination.route) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = homeTabColor.contrastColor,
+                                unselectedIconColor = homeTabColor.contrastColor.copy(alpha = 0.5f)
+                            )
                         )
-                    )
+                    }
                 }
-            }
-        }) {
+            }) {
 
             NavHost(
                 modifier = Modifier.padding(it),
@@ -92,7 +95,7 @@ fun MainTabbedView() {
                     Text("Library View")
                 }
                 composable(route = TabDestinations.Profile.route) {
-                    Text("Profile View")
+                    ProfileTabView()
                 }
             }
         }

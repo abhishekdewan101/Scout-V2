@@ -14,6 +14,7 @@ import com.adewan.scout.core.platform.PlatformRepository
 import com.adewan.scout.ui.features.auth.LoginViewModel
 import com.adewan.scout.ui.features.home.HomeTabViewModel
 import com.adewan.scout.ui.features.preference.PreferenceSelectionViewModel
+import com.adewan.scout.ui.features.profile.ProfileTabViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.core.module.dsl.viewModel
@@ -57,6 +58,7 @@ val appModule = module {
             authenticationRepository = get()
         )
     }
+    viewModel { ProfileTabViewModel(authenticationRepository = get()) }
     viewModel { HomeTabViewModel(gameRepository = get()) }
 
     factory { NetworkClient() }

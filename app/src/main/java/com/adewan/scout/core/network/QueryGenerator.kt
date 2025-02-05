@@ -3,8 +3,6 @@ package com.adewan.scout.core.network
 import com.adewan.scout.core.genres.GenreRepository
 import com.adewan.scout.core.local.DataStoreRepository
 import com.adewan.scout.core.platform.PlatformRepository
-import com.adewan.scout.ui.features.preference.SELECTED_GENRES_KEY
-import com.adewan.scout.ui.features.preference.SELECTED_PLATFORMS_KEY
 import java.time.Instant
 
 class QueryGeneratorRepository(
@@ -66,14 +64,17 @@ class QueryGeneratorRepository(
     }
 
     private suspend fun ensurePreferenceStrings() {
-        platformQueryString = platformRepository.getPlatformsFromString(
-            dataStoreRepository.getStringPreference(SELECTED_PLATFORMS_KEY)!!
-        ).map { it.id }.joinToString(separator = ",")
-        genreQueryString = genreRepository.getGenresFromString(
-            dataStoreRepository.getStringPreference(
-                SELECTED_GENRES_KEY
-            )!!
-        ).map { it.id }.joinToString(",")
+        platformQueryString = ""
+        genreQueryString = ""
+        //TODO: Figure out this before we do something.
+//        platformQueryString = platformRepository.getPlatformsFromString(
+//            dataStoreRepository.getStringPreference(SELECTED_PLATFORMS_KEY)!!
+//        ).map { it.id }.joinToString(separator = ",")
+//        genreQueryString = genreRepository.getGenresFromString(
+//            dataStoreRepository.getStringPreference(
+//                SELECTED_GENRES_KEY
+//            )!!
+//        ).map { it.id }.joinToString(",")
     }
 }
 

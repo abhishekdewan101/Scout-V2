@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,6 +19,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -25,12 +27,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.credentials.CredentialManager
 import com.adewan.scout.R
 import com.adewan.scout.ui.theme.poppinsFont
 import com.adewan.scout.ui.theme.postGuerillaFont
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun LoginView() {
+fun LoginView(viewModel: LoginViewModel = koinViewModel(), onLoginSuccessful: () -> Unit) {
+
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.loginbackgroundrotated),
@@ -87,12 +96,21 @@ fun LoginView() {
                     fontFamily = poppinsFont,
                     color = Color.White,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp),
+                    fontSize = 14.sp
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 20.dp)
                     .clickable {
-
+                        coroutineScope.launch {
+                            val response = CredentialManager
+                                .create(context)
+                                .getCredential(
+                                    context = context,
+                                    request = viewModel.getCredentialsRequest()
+                                )
+                            viewModel.processGetCredentialResponse(response)
+                        }
                     }
                     .clip(MaterialTheme.shapes.medium)
                     .background(
@@ -110,5 +128,5 @@ fun LoginView() {
 @Composable
 @Preview
 fun LoginViewPreview() {
-    LoginView()
+    LoginView {}
 }

@@ -11,8 +11,12 @@ import com.adewan.scout.core.local.DataStoreRepository
 import com.adewan.scout.core.network.NetworkClient
 import com.adewan.scout.core.network.QueryGeneratorRepository
 import com.adewan.scout.core.platform.PlatformRepository
+import com.adewan.scout.ui.features.login.LoginViewModel
+import com.adewan.scout.ui.features.navigation.AppNavigationViewModel
+import com.adewan.scout.usecases.IsUserLoggedInUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "scout_preferences")
@@ -44,5 +48,9 @@ val appModule = module {
     single { DataStoreRepository(dataStore = get()) }
     single<DataStore<Preferences>> { get<Context>().dataStore }
 
+    factory { IsUserLoggedInUseCase(firebaseAuthenticationRepository = get()) }
     factory { NetworkClient() }
+
+    viewModel { AppNavigationViewModel(isUserLoggedIn = get()) }
+    viewModel { LoginViewModel(firebaseAuthenticationRepository = get()) }
 }

@@ -10,3 +10,7 @@ fun Color.getContrastingColor(): Color {
     // Return white for dark colors and black for light colors
     return if (luminance > 0.5) Color.Black else Color.White
 }
+
+fun Int.toColor(): Color {
+    return Color(this)
+}

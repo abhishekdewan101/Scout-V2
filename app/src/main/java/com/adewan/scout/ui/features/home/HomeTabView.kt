@@ -2,15 +2,20 @@
 
 package com.adewan.scout.ui.features.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -20,6 +25,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,11 +36,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.adewan.scout.ui.components.GamePoster
 import com.adewan.scout.ui.components.Header
+import com.adewan.scout.ui.components.SpacerPoster
 import com.adewan.scout.ui.theme.ScoutColors
 import com.adewan.scout.ui.theme.poppinsFont
+import com.adewan.scout.utils.ExtractColorFromImage
+import com.adewan.scout.utils.imageList
 import org.koin.androidx.compose.koinViewModel
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun HomeTabView(
     viewModel: HomeTabViewModel = koinViewModel(),
@@ -74,8 +85,51 @@ fun HomeTabView(
                 }
             )
         }
+        item {
+            ShowcaseListPager(items = imageList, onColorsChanged = onColorsChanged)
+        }
+    }
+
+}
+
+
+@Composable
+private fun ShowcaseListPager(items: List<String>, onColorsChanged: (ScoutColors) -> Unit) {
+    val pagerState = rememberPagerState(pageCount = { items.size + 1 })
+
+    LaunchedEffect(items) {
+        pagerState.scrollToPage(0)
+    }
+
+    if (pagerState.currentPage < items.size) {
+        ExtractColorFromImage(
+            currentIndex = pagerState.currentPage,
+            items = items,
+            onColorsChanged = onColorsChanged
+        )
+    }
+
+    HorizontalPager(
+        state = pagerState,
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 15.dp),
+        pageSize = PageSize.Fixed(250.dp + 15.dp)
+    ) { page ->
+        if (page == items.size) {
+            SpacerPoster(width = 250.dp, height = 350.dp)
+        } else {
+            GamePoster(
+                posterUrl = items[page],
+                width = 250.dp,
+                height = 350.dp,
+                accessoryText = "Dec 27th, 2025"
+            )
+        }
     }
 }
+
 
 @Composable
 private fun ShowcaseListBottomSheet(

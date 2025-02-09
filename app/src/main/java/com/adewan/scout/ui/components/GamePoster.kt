@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -41,24 +40,36 @@ val imagePlaceHolder by lazy {
 }
 
 @Composable
+fun SpacerPoster(width: Dp, height: Dp) {
+    Box(
+        modifier = Modifier
+            .width(width)
+            .height(height)
+            .background(Color.Transparent)
+    )
+}
+
+@Composable
 fun GamePoster(
     modifier: Modifier = Modifier,
     posterUrl: String,
     width: Dp,
+    height: Dp,
     accessoryText: String? = null,
 ) {
     Box(modifier) {
         AsyncImage(
             model =
-            ImageRequest.Builder(LocalContext.current).data(posterUrl).crossfade(true).build(),
+                ImageRequest.Builder(LocalContext.current).data(posterUrl).crossfade(true).build(),
             contentDescription = "",
             placeholder = imagePlaceHolder,
             contentScale = ContentScale.Crop,
             modifier =
-            Modifier
-                .width(width = width)
-                .clip(MaterialTheme.shapes.medium)
-                .aspectRatio(2 / 3f)
+                Modifier
+                    .width(width = width)
+                    .height(height = height)
+                    .clip(MaterialTheme.shapes.medium)
+
         )
 
         if (accessoryText != null) {
@@ -66,15 +77,15 @@ fun GamePoster(
                 modifier = Modifier
                     .padding(start = 10.dp, top = 10.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(Color.Black.copy(alpha = 0.75f))
+                    .background(Color.White.copy(alpha = 0.75f))
             ) {
                 Text(
                     accessoryText,
-                    modifier = Modifier.padding(10.dp),
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = poppinsFont,
-                    fontSize = 12.sp,
-                    color = Color.White,
+                    fontSize = 14.sp,
+                    color = Color.Black,
                 )
             }
         }
@@ -89,12 +100,14 @@ fun PreviewGamePoster() {
             GamePoster(
                 posterUrl = "",
                 width = 200.dp,
+                height = 300.dp,
                 accessoryText = "July 17, 2020",
             )
             Spacer(modifier = Modifier.height(70.dp))
             GamePoster(
                 posterUrl = "",
                 width = 200.dp,
+                height = 300.dp,
                 accessoryText = "97.5%",
             )
         }

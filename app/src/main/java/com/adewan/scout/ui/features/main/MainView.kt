@@ -52,7 +52,8 @@ sealed class BottomNavDestination(
 fun MainView(
     colors: ScoutColors,
     onColorsChanged: (ScoutColors) -> Unit,
-    showSearchView: () -> Unit
+    showSearchView: () -> Unit,
+    showDetailsView: (String) -> Unit
 ) {
     val tabbedNavController = rememberNavController()
     val navBackStackEntry = tabbedNavController.currentBackStackEntryAsState()
@@ -87,7 +88,8 @@ fun MainView(
                 HomeTabView(
                     colors = colors,
                     onColorsChanged = onColorsChanged,
-                    onSearchIconPressed = showSearchView
+                    onSearchIconPressed = showSearchView,
+                    onItemPressed = showDetailsView
                 )
             }
             composable(BottomNavDestination.Library.route) {

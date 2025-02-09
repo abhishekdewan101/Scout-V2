@@ -10,3 +10,6 @@ data object Main
 
 @Serializable
 data object Search
+
+@Serializable
+data class Details(val slug: String)

@@ -12,13 +12,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -37,11 +40,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adewan.scout.ui.components.GamePoster
+import com.adewan.scout.ui.components.GameRow
 import com.adewan.scout.ui.components.Header
 import com.adewan.scout.ui.components.SpacerPoster
 import com.adewan.scout.ui.theme.ScoutColors
 import com.adewan.scout.ui.theme.poppinsFont
 import com.adewan.scout.utils.ExtractColorFromImage
+import com.adewan.scout.utils.games
 import com.adewan.scout.utils.imageList
 import org.koin.androidx.compose.koinViewModel
 
@@ -51,7 +56,8 @@ fun HomeTabView(
     viewModel: HomeTabViewModel = koinViewModel(),
     colors: ScoutColors,
     onColorsChanged: (ScoutColors) -> Unit,
-    onSearchIconPressed: () -> Unit
+    onSearchIconPressed: () -> Unit,
+    onItemPressed: (String) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -79,22 +85,54 @@ fun HomeTabView(
                 title = viewModel.currentSelectedList.title,
                 contrastColor = colors.contrastColor,
                 headerIcon = if (showListSelectionBottomSheet) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                onSearchClicked = onSearchIconPressed,
+                secondaryIcon = Icons.Default.Search,
+                onSecondaryIconClicked = onSearchIconPressed,
                 onHeaderClicked = {
                     showListSelectionBottomSheet = !showListSelectionBottomSheet
                 }
             )
         }
         item {
-            ShowcaseListPager(items = imageList, onColorsChanged = onColorsChanged)
+            ShowcaseListPager(
+                items = imageList,
+                onColorsChanged = onColorsChanged,
+                onItemPressed = onItemPressed
+            )
+        }
+        item {
+            Header(
+                modifier = Modifier.padding(vertical = 16.dp),
+                title = "Highly Rated",
+                contrastColor = colors.contrastColor,
+                secondaryIcon = Icons.Default.FilterAlt,
+                onSecondaryIconClicked = onSearchIconPressed,
+            )
+        }
+
+        itemsIndexed(games) { index, game ->
+            GameRow(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .clickable { onItemPressed(game.slug) },
+                posterUrl = game.posterUrl,
+                title = game.name,
+                subTitle = game.publisher,
+                index = index,
+                textColor = colors.contrastColor,
+                rating = game.rating.toString(),
+                platform = game.platform
+            )
         }
     }
-
 }
 
 
 @Composable
-private fun ShowcaseListPager(items: List<String>, onColorsChanged: (ScoutColors) -> Unit) {
+private fun ShowcaseListPager(
+    items: List<String>,
+    onColorsChanged: (ScoutColors) -> Unit,
+    onItemPressed: (String) -> Unit
+) {
     val pagerState = rememberPagerState(pageCount = { items.size + 1 })
 
     LaunchedEffect(items) {
@@ -121,6 +159,7 @@ private fun ShowcaseListPager(items: List<String>, onColorsChanged: (ScoutColors
             SpacerPoster(width = 250.dp, height = 350.dp)
         } else {
             GamePoster(
+                modifier = Modifier.clickable { onItemPressed("slug") },
                 posterUrl = items[page],
                 width = 250.dp,
                 height = 350.dp,

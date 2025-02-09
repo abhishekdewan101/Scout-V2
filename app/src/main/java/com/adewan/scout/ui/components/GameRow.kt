@@ -100,7 +100,7 @@ fun GameRow(
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.Bottom
                     ) {
                         platform?.let {
                             Text(
@@ -118,10 +118,10 @@ fun GameRow(
                         Spacer(modifier = Modifier.fillMaxWidth(.20f))
                         rating?.let {
                             Text(
-                                "$rating",
+                                "$rating%",
                                 fontWeight = FontWeight.SemiBold,
                                 fontFamily = poppinsFont,
-                                fontSize = 16.sp,
+                                fontSize = 32.sp,
                                 color = textColor
                             )
                         }

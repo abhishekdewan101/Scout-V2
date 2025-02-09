@@ -9,7 +9,9 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.adewan.scout.ui.components.FullScreenLoadingIndicator
+import com.adewan.scout.ui.features.details.DetailsView
 import com.adewan.scout.ui.features.login.LoginView
 import com.adewan.scout.ui.features.main.MainView
 import com.adewan.scout.ui.features.search.SearchView
@@ -42,6 +44,9 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
                     onColorsChanged = { currentScoutColor = it },
                     showSearchView = {
                         appNavigationController.navigate(Search)
+                    },
+                    showDetailsView = {
+                        appNavigationController.navigate(Details(slug = it))
                     })
             }
 
@@ -51,6 +56,15 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
                 popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
             ) {
                 SearchView(colors = currentScoutColor)
+            }
+
+            composable<Details>(
+                enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
+                exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
+                popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
+            ) { backStackEntry ->
+                val details: Details = backStackEntry.toRoute()
+                DetailsView(colors = currentScoutColor, slug = details.slug)
             }
         }
     }

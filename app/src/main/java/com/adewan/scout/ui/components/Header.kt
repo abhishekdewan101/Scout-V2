@@ -34,8 +34,9 @@ fun Header(
     title: String,
     contrastColor: Color,
     headerIcon: ImageVector? = null,
+    secondaryIcon: ImageVector,
     onHeaderClicked: (() -> Unit)? = null,
-    onSearchClicked: (() -> Unit)
+    onSecondaryIconClicked: (() -> Unit)
 ) {
     Row(
         modifier = modifier
@@ -75,13 +76,13 @@ fun Header(
         }
 
         Icon(
-            Icons.Default.Search,
+            secondaryIcon,
             "",
             tint = contrastColor,
             modifier = Modifier
                 .size(28.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .clickable { onSearchClicked() })
+                .clickable { onSecondaryIconClicked() })
     }
 }
 
@@ -95,8 +96,9 @@ fun HeaderPreview() {
     ) {
         Header(
             title = "Profile",
-            onSearchClicked = {},
+            onSecondaryIconClicked = {},
             headerIcon = Icons.Default.KeyboardArrowDown,
+            secondaryIcon = Icons.Default.Search,
             contrastColor = Color.White,
             onHeaderClicked = {})
     }

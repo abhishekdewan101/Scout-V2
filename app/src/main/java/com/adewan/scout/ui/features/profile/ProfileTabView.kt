@@ -19,6 +19,7 @@ import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.PowerSettingsNew
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,7 +55,8 @@ fun ProfileTabView(
             modifier = Modifier.padding(top = 16.dp),
             title = "Profile",
             contrastColor = colors.contrastColor,
-            onSearchClicked = onSearchIconPressed,
+            secondaryIcon = Icons.Default.Search,
+            onSecondaryIconClicked = onSearchIconPressed,
         )
         Avatar(initials = "AD", contrastColor = colors.contrastColor)
 

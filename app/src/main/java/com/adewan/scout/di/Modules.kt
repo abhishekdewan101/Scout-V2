@@ -11,6 +11,7 @@ import com.adewan.scout.core.local.DataStoreRepository
 import com.adewan.scout.core.network.NetworkClient
 import com.adewan.scout.core.network.QueryGeneratorRepository
 import com.adewan.scout.core.platform.PlatformRepository
+import com.adewan.scout.ui.features.home.HomeTabViewModel
 import com.adewan.scout.ui.features.login.LoginViewModel
 import com.adewan.scout.ui.features.navigation.AppNavigationViewModel
 import com.adewan.scout.ui.features.profile.ProfileTabViewModel
@@ -55,4 +56,5 @@ val appModule = module {
     viewModel { AppNavigationViewModel(isUserLoggedIn = get()) }
     viewModel { LoginViewModel(firebaseAuthenticationRepository = get()) }
     viewModel { ProfileTabViewModel(firebaseAuthenticationRepository = get()) }
+    viewModel { HomeTabViewModel() }
 }

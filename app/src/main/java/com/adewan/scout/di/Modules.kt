@@ -13,6 +13,7 @@ import com.adewan.scout.core.network.QueryGeneratorRepository
 import com.adewan.scout.core.platform.PlatformRepository
 import com.adewan.scout.ui.features.login.LoginViewModel
 import com.adewan.scout.ui.features.navigation.AppNavigationViewModel
+import com.adewan.scout.ui.features.profile.ProfileTabViewModel
 import com.adewan.scout.usecases.IsUserLoggedInUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -53,4 +54,5 @@ val appModule = module {
 
     viewModel { AppNavigationViewModel(isUserLoggedIn = get()) }
     viewModel { LoginViewModel(firebaseAuthenticationRepository = get()) }
+    viewModel { ProfileTabViewModel(firebaseAuthenticationRepository = get()) }
 }

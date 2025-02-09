@@ -22,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.adewan.scout.R
 import com.adewan.scout.ui.features.home.HomeTabView
+import com.adewan.scout.ui.features.profile.ProfileTabView
 import com.adewan.scout.ui.theme.ScoutColors
 import kotlinx.serialization.Serializable
 
@@ -93,7 +94,7 @@ fun MainView(
                 Text(BottomNavDestination.Library.route)
             }
             composable(BottomNavDestination.Profile.route) {
-                Text("Profile")
+                ProfileTabView(colors = colors, onSearchIconPressed = showSearchView)
             }
         }
     }

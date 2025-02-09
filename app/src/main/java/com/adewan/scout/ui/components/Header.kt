@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,31 +29,59 @@ import androidx.compose.ui.unit.sp
 import com.adewan.scout.ui.theme.poppinsFont
 
 @Composable
-fun Header(title: String, contrastColor: Color) {
+fun Header(
+    modifier: Modifier = Modifier,
+    title: String,
+    contrastColor: Color,
+    headerIcon: ImageVector? = null,
+    onHeaderClicked: (() -> Unit)? = null,
+    onSearchClicked: (() -> Unit)
+) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            title,
-            style = TextStyle(
-                fontSize = 32.sp,
-                fontFamily = poppinsFont,
-                fontWeight = FontWeight.SemiBold,
-                color = contrastColor
-            )
+        Row(
+            modifier = Modifier.then(
+                if (onHeaderClicked != null) Modifier.clickable {
+                    onHeaderClicked()
+                } else Modifier
+            ),
+            verticalAlignment = Alignment.CenterVertically
         )
+        {
+            Text(
+                title,
+                style = TextStyle(
+                    fontSize = 28.sp,
+                    fontFamily = poppinsFont,
+                    fontWeight = FontWeight.SemiBold,
+                    color = contrastColor
+                )
+            )
+            if (onHeaderClicked != null && headerIcon != null) {
+                Icon(
+                    headerIcon,
+                    "",
+                    modifier = Modifier
+                        .size(28.dp)
+                        .padding(start = 6.dp),
+                    tint = contrastColor
+                )
+            }
+        }
+
         Icon(
             Icons.Default.Search,
             "",
             tint = contrastColor,
             modifier = Modifier
-                .size(32.dp)
+                .size(28.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .clickable { })
+                .clickable { onSearchClicked() })
     }
 }
 
@@ -63,6 +93,11 @@ fun HeaderPreview() {
             .fillMaxSize()
             .background(Color.Red)
     ) {
-        Header(title = "Profile", contrastColor = Color.White)
+        Header(
+            title = "Profile",
+            onSearchClicked = {},
+            headerIcon = Icons.Default.KeyboardArrowDown,
+            contrastColor = Color.White,
+            onHeaderClicked = {})
     }
 }

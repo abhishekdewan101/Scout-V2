@@ -11,11 +11,6 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -26,9 +21,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.adewan.scout.R
-import com.adewan.scout.ui.theme.LocalScoutColors
+import com.adewan.scout.ui.features.home.HomeTabView
 import com.adewan.scout.ui.theme.ScoutColors
-import com.adewan.scout.ui.theme.defaultScoutColor
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -53,54 +47,49 @@ sealed class BottomNavDestination(
     }
 }
 
-@Serializable
-data object Profile
-
 @Composable
-fun MainView() {
+fun MainView(colors: ScoutColors, showSearchView: () -> Unit) {
     val tabbedNavController = rememberNavController()
     val navBackStackEntry = tabbedNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry.value?.destination
-    var currentScoutColor by remember { mutableStateOf(defaultScoutColor) }
 
-    CompositionLocalProvider(LocalScoutColors provides currentScoutColor) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            containerColor = currentScoutColor.backgroundColor,
-            bottomBar = {
-                MainViewBottomBar(
-                    currentDestination = currentDestination,
-                    colors = currentScoutColor,
-                    onItemClicked = {
-                        tabbedNavController.navigate(it) {
-                            popUpTo(BottomNavDestination.Home.route) {
-                                saveState = true
-                                inclusive = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = colors.backgroundColor,
+        bottomBar = {
+            MainViewBottomBar(
+                currentDestination = currentDestination,
+                colors = colors,
+                onItemClicked = {
+                    tabbedNavController.navigate(it) {
+                        popUpTo(BottomNavDestination.Home.route) {
+                            saveState = true
+                            inclusive = true
                         }
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                )
-            }
+                }
+            )
+        }
+    ) {
+        NavHost(
+            modifier = Modifier.padding(it),
+            navController = tabbedNavController,
+            startDestination = BottomNavDestination.Home.route
         ) {
-            NavHost(
-                modifier = Modifier.padding(it),
-                navController = tabbedNavController,
-                startDestination = BottomNavDestination.Home.route
-            ) {
-                composable(BottomNavDestination.Home.route) {
-                    Text("Home")
-                }
-                composable(BottomNavDestination.Library.route) {
-                    Text(BottomNavDestination.Library.route)
-                }
-                composable(BottomNavDestination.Profile.route) {
-                    Text("Profile")
-                }
+            composable(BottomNavDestination.Home.route) {
+                HomeTabView(colors = colors, onSearchIconPressed = showSearchView)
+            }
+            composable(BottomNavDestination.Library.route) {
+                Text(BottomNavDestination.Library.route)
+            }
+            composable(BottomNavDestination.Profile.route) {
+                Text("Profile")
             }
         }
     }
+
 }
 
 @Composable

@@ -1,32 +1,134 @@
 package com.adewan.scout.ui.features.main
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.adewan.scout.core.auth.FirebaseAuthenticationRepository
-import io.ktor.websocket.Frame.Text
-import org.koin.compose.koinInject
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.adewan.scout.R
+import com.adewan.scout.ui.theme.LocalScoutColors
+import com.adewan.scout.ui.theme.ScoutColors
+import com.adewan.scout.ui.theme.defaultScoutColor
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed class BottomNavDestination(
+    val route: String,
+    @DrawableRes val filledIcon: Int,
+    @DrawableRes val outlinedIcon: Int
+) {
+    @Serializable
+    data object Home : BottomNavDestination("Home", R.drawable.home_filled, R.drawable.home)
+
+    @Serializable
+    data object Library :
+        BottomNavDestination("Library", R.drawable.library, R.drawable.library_outlined)
+
+    @Serializable
+    data object Profile :
+        BottomNavDestination("Profile", R.drawable.profile_filled, R.drawable.profile)
+
+    companion object {
+        val all = listOf(Home, Library, Profile)
+    }
+}
+
+@Serializable
+data object Profile
 
 @Composable
-fun MainView(firebaseAuthenticationRepository: FirebaseAuthenticationRepository = koinInject()) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = { firebaseAuthenticationRepository.logout() }) {
-            Text("Log Out")
+fun MainView() {
+    val tabbedNavController = rememberNavController()
+    val navBackStackEntry = tabbedNavController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry.value?.destination
+    var currentScoutColor by remember { mutableStateOf(defaultScoutColor) }
+
+    CompositionLocalProvider(LocalScoutColors provides currentScoutColor) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = currentScoutColor.backgroundColor,
+            bottomBar = {
+                MainViewBottomBar(
+                    currentDestination = currentDestination,
+                    colors = currentScoutColor,
+                    onItemClicked = {
+                        tabbedNavController.navigate(it) {
+                            popUpTo(BottomNavDestination.Home.route) {
+                                saveState = true
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            }
+        ) {
+            NavHost(
+                modifier = Modifier.padding(it),
+                navController = tabbedNavController,
+                startDestination = BottomNavDestination.Home.route
+            ) {
+                composable(BottomNavDestination.Home.route) {
+                    Text("Home")
+                }
+                composable(BottomNavDestination.Library.route) {
+                    Text(BottomNavDestination.Library.route)
+                }
+                composable(BottomNavDestination.Profile.route) {
+                    Text("Profile")
+                }
+            }
         }
     }
 }
 
-@Preview
 @Composable
-fun MainViewPreview() {
-    MainView()
+fun MainViewBottomBar(
+    currentDestination: NavDestination?,
+    colors: ScoutColors,
+    onItemClicked: (String) -> Unit
+) {
+    NavigationBar(containerColor = colors.backgroundColor, tonalElevation = 0.dp) {
+        BottomNavDestination.all.forEach {
+            NavigationBarItem(
+                selected = currentDestination?.route == it.route,
+                icon = {
+                    Icon(
+                        painter = painterResource(
+                            if (currentDestination?.route == it.route) it.filledIcon else it.outlinedIcon
+                        ),
+                        contentDescription = it.route,
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                onClick = { onItemClicked(it.route) },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = Color.Transparent,
+                    selectedIconColor = colors.contrastColor,
+                    unselectedIconColor = colors.contrastColor.copy(alpha = 0.5f)
+                )
+            )
+        }
+    }
 }

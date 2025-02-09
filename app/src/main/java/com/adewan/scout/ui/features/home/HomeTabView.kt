@@ -26,7 +26,11 @@ import com.adewan.scout.ui.components.Header
 import com.adewan.scout.ui.theme.ScoutColors
 
 @Composable
-fun HomeTabView(colors: ScoutColors, onSearchIconPressed: () -> Unit) {
+fun HomeTabView(
+    colors: ScoutColors,
+    onColorsChanged: (ScoutColors) -> Unit,
+    onSearchIconPressed: () -> Unit
+) {
     val lazyListState = rememberLazyListState()
 
     var showListSelectionBottomSheet by remember { mutableStateOf(false) }

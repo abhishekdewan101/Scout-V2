@@ -37,9 +37,12 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
                     AnimatedContentTransitionScope.SlideDirection.Right
                 )
             }) {
-                MainView(colors = currentScoutColor, showSearchView = {
-                    appNavigationController.navigate(Search)
-                })
+                MainView(
+                    colors = currentScoutColor,
+                    onColorsChanged = { currentScoutColor = it },
+                    showSearchView = {
+                        appNavigationController.navigate(Search)
+                    })
             }
 
             composable<Search>(

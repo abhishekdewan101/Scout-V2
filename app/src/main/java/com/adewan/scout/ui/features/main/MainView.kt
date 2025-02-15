@@ -9,7 +9,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +21,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.adewan.scout.R
 import com.adewan.scout.ui.features.home.HomeTabView
+import com.adewan.scout.ui.features.library.LibraryTabView
 import com.adewan.scout.ui.features.profile.ProfileTabView
 import com.adewan.scout.ui.theme.ScoutColors
 import kotlinx.serialization.Serializable
@@ -93,7 +93,7 @@ fun MainView(
                 )
             }
             composable(BottomNavDestination.Library.route) {
-                Text(BottomNavDestination.Library.route)
+                LibraryTabView(colors = colors, onSearchIconPressed = showSearchView)
             }
             composable(BottomNavDestination.Profile.route) {
                 ProfileTabView(colors = colors, onSearchIconPressed = showSearchView)

@@ -64,7 +64,12 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
                 popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
             ) { backStackEntry ->
                 val details: Details = backStackEntry.toRoute()
-                DetailsView(colors = currentScoutColor, slug = details.slug)
+                DetailsView(
+                    colors = currentScoutColor,
+                    slug = details.slug,
+                    navigateToDetailView = {
+                        appNavigationController.navigate(Details(slug = it))
+                    })
             }
         }
     }

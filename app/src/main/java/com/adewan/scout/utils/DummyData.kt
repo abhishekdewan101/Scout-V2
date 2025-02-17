@@ -13,6 +13,16 @@ val imageList = listOf(
     "https://image.api.playstation.com/vulcan/img/rnd/202011/1021/X3WIAh63yKhRRiMohLoJMeQu.png"
 )
 
+val screenshots = listOf(
+    "https://sm.ign.com/t/ign_it/screenshot/default/gfqrvcgxkagbn3g_pfc8.1280.jpg",
+    "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1091500/ss_7924f64b6e5d586a80418c9896a1c92881a7905b.1920x1080.jpg?t=1734434803",
+    "https://imageio.forbes.com/specials-images/imageserve/650d918cddc149fda9157454/photomode-21092023-200217/960x0.jpg?format=jpg&width=960",
+    "https://xxboxnews.blob.core.windows.net/prod/sites/2/2024/12/Cyberpunk-2.2-HERO-a4a4cf2d36cdeb91b2f0.jpg",
+)
+
+const val dummyStoryline =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \n\n Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
 data class Game(
     val slug: String,
     val name: String,
@@ -21,6 +31,29 @@ data class Game(
     val rating: Double,
     val publisher: String,
     val posterUrl: String
+)
+
+
+val downloadbleContent = listOf(
+    Game(
+        slug = "gow",
+        name = "Cyberpunk 2077: Phantom Liberty",
+        platform = "PlayStation 5",
+        releaseYear = 2019,
+        rating = 94.5,
+        publisher = "CD Projekt Red",
+        posterUrl = "https://cdn1.epicgames.com/offer/77f2b98e2cef40c8a7437518bf420e47/EGS_Cyberpunk2077PhantomLiberty_CDPROJEKTRED_DLC_S2_1200x1600-3acec02a8b11a2c50ba8dd3cb217f1c6"
+    ),
+    Game(
+        slug = "gow",
+        name = "Cyberpunk 2077: Rising Tide",
+        platform = "PlayStation 5",
+        releaseYear = 2024,
+        rating = 91.2,
+        publisher = "CD Projekt Red",
+        posterUrl = "https://i.ebayimg.com/images/g/OgAAAOSwK5tgDyUz/s-l1200.jpg"
+    )
+
 )
 
 

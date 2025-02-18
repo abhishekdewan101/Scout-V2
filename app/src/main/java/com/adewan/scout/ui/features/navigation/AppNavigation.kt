@@ -49,7 +49,9 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
             composable<Search>(
                 enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
             ) {
-                SearchView(colors = currentScoutColor)
+                SearchView(colors = currentScoutColor, navigateToDetailView = {
+                    appNavigationController.navigate(Details(slug = it))
+                })
             }
 
             composable<Details>(

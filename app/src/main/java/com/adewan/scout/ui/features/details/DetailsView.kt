@@ -66,7 +66,13 @@ import com.adewan.scout.utils.screenshots
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun DetailsView(colors: ScoutColors, slug: String, navigateToDetailView: (String) -> Unit) {
+fun DetailsView(
+    colors: ScoutColors,
+    slug: String,
+    navigateToDetailView: (String) -> Unit,
+    navigateToSearchView: () -> Unit,
+    navigateBack: () -> Unit
+) {
     var userSelectedLibraryCollection by remember { mutableIntStateOf(-1) }
 
     Scaffold(containerColor = colors.backgroundColor) {
@@ -77,7 +83,11 @@ fun DetailsView(colors: ScoutColors, slug: String, navigateToDetailView: (String
             verticalArrangement = spacedBy(16.dp),
         ) {
             item {
-                DetailViewHeader(colors)
+                DetailViewHeader(
+                    colors = colors,
+                    navigateToSearchView = navigateToSearchView,
+                    navigateBack = navigateBack
+                )
             }
             item {
                 AsyncImage(
@@ -592,7 +602,11 @@ private fun GameName(colors: ScoutColors) {
 }
 
 @Composable
-private fun DetailViewHeader(colors: ScoutColors) {
+private fun DetailViewHeader(
+    colors: ScoutColors,
+    navigateToSearchView: () -> Unit,
+    navigateBack: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -600,7 +614,7 @@ private fun DetailViewHeader(colors: ScoutColors) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        IconButton(onClick = {}) {
+        IconButton(onClick = navigateBack) {
             Icon(
                 Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
@@ -629,7 +643,7 @@ private fun DetailViewHeader(colors: ScoutColors) {
             )
         }
 
-        IconButton(onClick = {}) {
+        IconButton(onClick = navigateToSearchView) {
             Icon(
                 Icons.Default.Search, contentDescription = "Search", tint = colors.contrastColor
             )

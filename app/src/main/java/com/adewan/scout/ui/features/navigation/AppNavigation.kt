@@ -34,11 +34,7 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
                 LoginView(onLoginSuccessful = {})
             }
 
-            composable<Main>(popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right
-                )
-            }) {
+            composable<Main> {
                 MainView(
                     colors = currentScoutColor,
                     onColorsChanged = { currentScoutColor = it },
@@ -52,16 +48,12 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
 
             composable<Search>(
                 enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
-                exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
-                popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
             ) {
                 SearchView(colors = currentScoutColor)
             }
 
             composable<Details>(
                 enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
-                exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
-                popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
             ) { backStackEntry ->
                 val details: Details = backStackEntry.toRoute()
                 DetailsView(
@@ -69,6 +61,12 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
                     slug = details.slug,
                     navigateToDetailView = {
                         appNavigationController.navigate(Details(slug = it))
+                    },
+                    navigateToSearchView = {
+                        appNavigationController.navigate(Search)
+                    },
+                    navigateBack = {
+                        appNavigationController.popBackStack()
                     })
             }
         }

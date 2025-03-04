@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
 import com.adewan.scout.R
+import com.adewan.scout.ui.theme.jerseyFont
 import com.adewan.scout.ui.theme.poppinsFont
-import com.adewan.scout.ui.theme.postGuerillaFont
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -71,10 +71,10 @@ fun LoginView(viewModel: LoginViewModel = koinViewModel(), onLoginSuccessful: ()
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "Scout",
+                "Pixel Shelf",
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    fontFamily = postGuerillaFont,
+                    fontFamily = jerseyFont,
                     fontSize = 64.sp,
                     color = Color.White,
                 )
@@ -112,7 +112,7 @@ fun LoginView(viewModel: LoginViewModel = koinViewModel(), onLoginSuccessful: ()
                             viewModel.processGetCredentialResponse(response)
                         }
                     }
-                    .clip(MaterialTheme.shapes.medium)
+                    .clip(MaterialTheme.shapes.large)
                     .background(
                         brush = Brush.linearGradient(
                             0.0f to Color(0xFF1952c2),

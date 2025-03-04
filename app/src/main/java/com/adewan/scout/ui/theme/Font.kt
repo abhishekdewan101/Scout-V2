@@ -16,4 +16,4 @@ val poppinsFont =
         Font(R.font.poppins_black, FontWeight.Black),
     )
 
-val postGuerillaFont = FontFamily(Font(R.font.protestguriella_regular, FontWeight.Normal))
+val jerseyFont = FontFamily(Font(R.font.jersey_regular, FontWeight.Normal))

@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Scout"
+rootProject.name = "Pixel Shelf"
 include(":app")

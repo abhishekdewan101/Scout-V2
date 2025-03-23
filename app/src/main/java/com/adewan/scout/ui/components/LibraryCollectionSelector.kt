@@ -23,12 +23,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.adewan.scout.R
-import com.adewan.scout.ui.theme.ScoutColors
+import com.adewan.scout.ui.theme.PixelColors
 
 @Composable
 fun LibraryCollectionSelector(
     modifier: Modifier = Modifier,
-    colors: ScoutColors,
+    colors: PixelColors,
     selectedLibraryCollection: Int = -1,
     changeSelectedLibraryCollection: (Int) -> Unit
 ) {

@@ -9,13 +9,13 @@ import coil.ImageLoader
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.request.SuccessResult
-import com.adewan.scout.ui.theme.ScoutColors
+import com.adewan.scout.ui.theme.PixelColors
 
 @Composable
 fun ExtractColorFromImage(
     currentIndex: Int,
     items: List<String>,
-    onColorsChanged: (ScoutColors) -> Unit
+    onColorsChanged: (PixelColors) -> Unit
 ) {
     val context = LocalContext.current
     LaunchedEffect(currentIndex) {

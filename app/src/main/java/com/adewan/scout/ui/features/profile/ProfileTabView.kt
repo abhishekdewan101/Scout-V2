@@ -33,14 +33,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adewan.scout.ui.components.Header
-import com.adewan.scout.ui.theme.ScoutColors
+import com.adewan.scout.ui.theme.PixelColors
 import com.adewan.scout.ui.theme.poppinsFont
 import com.adewan.scout.utils.bottomBorder
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProfileTabView(
-    colors: ScoutColors,
+    colors: PixelColors,
     onSearchIconPressed: () -> Unit,
     viewModel: ProfileTabViewModel = koinViewModel()
 ) {

@@ -12,4 +12,7 @@ data object Main
 data object Search
 
 @Serializable
+data object Preferences
+
+@Serializable
 data class Details(val slug: String)

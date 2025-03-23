@@ -57,7 +57,7 @@ import com.adewan.scout.ui.components.GamePoster
 import com.adewan.scout.ui.components.GameRow
 import com.adewan.scout.ui.components.LibraryCollectionSelector
 import com.adewan.scout.ui.components.imagePlaceHolder
-import com.adewan.scout.ui.theme.ScoutColors
+import com.adewan.scout.ui.theme.PixelColors
 import com.adewan.scout.ui.theme.poppinsFont
 import com.adewan.scout.utils.downloadbleContent
 import com.adewan.scout.utils.dummyStoryline
@@ -67,7 +67,7 @@ import com.adewan.scout.utils.screenshots
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DetailsView(
-    colors: ScoutColors,
+    colors: PixelColors,
     slug: String,
     navigateToDetailView: (String) -> Unit,
     navigateToSearchView: () -> Unit,
@@ -178,7 +178,7 @@ fun DetailsView(
 }
 
 @Composable
-private fun SimilarGamesPager(colors: ScoutColors, navigateToDetailView: (String) -> Unit) {
+private fun SimilarGamesPager(colors: PixelColors, navigateToDetailView: (String) -> Unit) {
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -246,7 +246,7 @@ private fun SimilarGamesPager(colors: ScoutColors, navigateToDetailView: (String
 }
 
 @Composable
-private fun DownloadableContentPager(colors: ScoutColors, navigateToDetailView: (String) -> Unit) {
+private fun DownloadableContentPager(colors: PixelColors, navigateToDetailView: (String) -> Unit) {
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -310,7 +310,7 @@ private fun DownloadableContentPager(colors: ScoutColors, navigateToDetailView: 
 }
 
 @Composable
-private fun RatingRow(colors: ScoutColors) {
+private fun RatingRow(colors: PixelColors) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -339,7 +339,7 @@ private fun RatingRow(colors: ScoutColors) {
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-private fun GamePlatforms(colors: ScoutColors) {
+private fun GamePlatforms(colors: PixelColors) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Text(
             "Platforms", style = TextStyle(
@@ -363,7 +363,7 @@ private fun GamePlatforms(colors: ScoutColors) {
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-private fun GameGenres(colors: ScoutColors) {
+private fun GameGenres(colors: PixelColors) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Text(
             "Genre", style = TextStyle(
@@ -393,7 +393,7 @@ private fun GameGenres(colors: ScoutColors) {
 }
 
 @Composable
-private fun GameTag(colors: ScoutColors, tagName: String) {
+private fun GameTag(colors: PixelColors, tagName: String) {
     Box(
         modifier = Modifier
             .background(
@@ -415,7 +415,7 @@ private fun GameTag(colors: ScoutColors, tagName: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ScreenshotsPager(colors: ScoutColors) {
+private fun ScreenshotsPager(colors: PixelColors) {
 
     var isExpandedViewer by remember { mutableStateOf(false) }
 
@@ -544,7 +544,7 @@ private fun ScreenshotsPager(colors: ScoutColors) {
 }
 
 @Composable
-private fun GameTrailer(colors: ScoutColors) {
+private fun GameTrailer(colors: PixelColors) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -574,7 +574,7 @@ private fun GameTrailer(colors: ScoutColors) {
 }
 
 @Composable
-private fun GameName(colors: ScoutColors) {
+private fun GameName(colors: PixelColors) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -603,7 +603,7 @@ private fun GameName(colors: ScoutColors) {
 
 @Composable
 private fun DetailViewHeader(
-    colors: ScoutColors,
+    colors: PixelColors,
     navigateToSearchView: () -> Unit,
     navigateBack: () -> Unit
 ) {

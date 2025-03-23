@@ -41,12 +41,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adewan.scout.ui.components.GameRow
-import com.adewan.scout.ui.theme.ScoutColors
+import com.adewan.scout.ui.theme.PixelColors
 import com.adewan.scout.ui.theme.poppinsFont
 import com.adewan.scout.utils.games
 
 @Composable
-fun SearchView(colors: ScoutColors, navigateToDetailView: (String) -> Unit) {
+fun SearchView(colors: PixelColors, navigateToDetailView: (String) -> Unit) {
     var searchTerm by remember { mutableStateOf(TextFieldValue("")) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current

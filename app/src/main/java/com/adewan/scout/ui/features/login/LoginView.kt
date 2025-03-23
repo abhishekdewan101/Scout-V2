@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun LoginView(viewModel: LoginViewModel = koinViewModel(), onLoginSuccessful: () -> Unit) {
+fun LoginView(viewModel: LoginViewModel = koinViewModel()) {
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -128,5 +128,5 @@ fun LoginView(viewModel: LoginViewModel = koinViewModel(), onLoginSuccessful: ()
 @Composable
 @Preview
 fun LoginViewPreview() {
-    LoginView {}
+    LoginView()
 }

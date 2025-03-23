@@ -1,15 +1,9 @@
 package com.adewan.scout.core.network
 
-import com.adewan.scout.core.genres.GenreRepository
 import com.adewan.scout.core.local.DataStoreRepository
-import com.adewan.scout.core.platform.PlatformRepository
 import java.time.Instant
 
-class QueryGeneratorRepository(
-    private val dataStoreRepository: DataStoreRepository,
-    private val platformRepository: PlatformRepository,
-    private val genreRepository: GenreRepository
-) {
+class QueryGeneratorRepository(private val dataStoreRepository: DataStoreRepository) {
 
     lateinit var platformQueryString: String
     lateinit var genreQueryString: String

@@ -51,7 +51,7 @@ import com.adewan.scout.ui.components.GamePoster
 import com.adewan.scout.ui.components.GameRow
 import com.adewan.scout.ui.components.Header
 import com.adewan.scout.ui.components.SpacerPoster
-import com.adewan.scout.ui.theme.ScoutColors
+import com.adewan.scout.ui.theme.PixelColors
 import com.adewan.scout.ui.theme.poppinsFont
 import com.adewan.scout.utils.ExtractColorFromImage
 import com.adewan.scout.utils.games
@@ -62,8 +62,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeTabView(
     viewModel: HomeTabViewModel = koinViewModel(),
-    colors: ScoutColors,
-    onColorsChanged: (ScoutColors) -> Unit,
+    colors: PixelColors,
+    onColorsChanged: (PixelColors) -> Unit,
     onSearchIconPressed: () -> Unit,
     onItemPressed: (String) -> Unit
 ) {
@@ -161,7 +161,7 @@ fun HomeTabView(
 
 @Composable
 private fun ShowcaseListPager(
-    items: List<String>, onColorsChanged: (ScoutColors) -> Unit, onItemPressed: (String) -> Unit
+    items: List<String>, onColorsChanged: (PixelColors) -> Unit, onItemPressed: (String) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { items.size + 1 })
 
@@ -199,7 +199,7 @@ private fun ShowcaseListPager(
 
 @Composable
 fun FilterBottomSheet(
-    colors: ScoutColors,
+    colors: PixelColors,
     onDismiss: () -> Unit,
     currentSelectedPlatforms: SnapshotStateList<Int>,
     onPlatformsChanged: (List<Int>) -> Unit,
@@ -296,7 +296,7 @@ fun FilterBottomSheet(
 private fun ShowcaseListBottomSheet(
     selectedList: ShowcaseListType,
     onChangeSelectedList: (ShowcaseListType) -> Unit,
-    colors: ScoutColors,
+    colors: PixelColors,
     onDismiss: () -> Unit
 ) {
     ModalBottomSheet(

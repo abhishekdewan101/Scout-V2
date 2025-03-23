@@ -38,11 +38,11 @@ import com.adewan.scout.ui.components.GameRow
 import com.adewan.scout.ui.components.Header
 import com.adewan.scout.ui.components.LibraryCollectionSelector
 import com.adewan.scout.ui.features.home.FilterBottomSheet
-import com.adewan.scout.ui.theme.ScoutColors
+import com.adewan.scout.ui.theme.PixelColors
 import com.adewan.scout.utils.games
 
 @Composable
-fun LibraryTabView(colors: ScoutColors, onSearchIconPressed: () -> Unit) {
+fun LibraryTabView(colors: PixelColors, onSearchIconPressed: () -> Unit) {
 
     var selectedLibraryCollection by remember { mutableIntStateOf(0) }
     var showFilterBottomSheet by remember { mutableStateOf(false) }
@@ -124,7 +124,7 @@ fun LibraryTabView(colors: ScoutColors, onSearchIconPressed: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterBottomSheet(
-    colors: ScoutColors,
+    colors: PixelColors,
     onDismiss: () -> Unit,
     currentSelectedPlatforms: SnapshotStateList<Int>,
     onPlatformsChanged: (List<Int>) -> Unit,
@@ -218,7 +218,7 @@ fun FilterBottomSheet(
 
 @Composable
 private fun LibraryCollectionFilter(
-    colors: ScoutColors,
+    colors: PixelColors,
     selectedLibraryCollection: Int,
     changeSelectedLibraryCollection: (Int) -> Unit,
 ) {

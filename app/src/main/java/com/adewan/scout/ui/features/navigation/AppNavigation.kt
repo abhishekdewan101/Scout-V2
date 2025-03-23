@@ -14,6 +14,7 @@ import com.adewan.scout.ui.components.FullScreenLoadingIndicator
 import com.adewan.scout.ui.features.details.DetailsView
 import com.adewan.scout.ui.features.login.LoginView
 import com.adewan.scout.ui.features.main.MainView
+import com.adewan.scout.ui.features.preference.PreferenceView
 import com.adewan.scout.ui.features.search.SearchView
 import com.adewan.scout.ui.theme.defaultScoutColor
 import org.koin.androidx.compose.koinViewModel
@@ -25,19 +26,23 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
         FullScreenLoadingIndicator()
     } else {
         val appNavigationController = rememberNavController()
-        var currentScoutColor by remember { mutableStateOf(defaultScoutColor) }
+        var currentPixelColors by remember { mutableStateOf(defaultScoutColor) }
 
         NavHost(
             navController = appNavigationController, startDestination = localStartDestination
         ) {
             composable<Login> {
-                LoginView(onLoginSuccessful = {})
+                LoginView()
+            }
+
+            composable<Preferences> {
+                PreferenceView(colors = currentPixelColors)
             }
 
             composable<Main> {
                 MainView(
-                    colors = currentScoutColor,
-                    onColorsChanged = { currentScoutColor = it },
+                    colors = currentPixelColors,
+                    onColorsChanged = { currentPixelColors = it },
                     showSearchView = {
                         appNavigationController.navigate(Search)
                     },
@@ -49,7 +54,7 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
             composable<Search>(
                 enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
             ) {
-                SearchView(colors = currentScoutColor, navigateToDetailView = {
+                SearchView(colors = currentPixelColors, navigateToDetailView = {
                     appNavigationController.navigate(Details(slug = it))
                 })
             }
@@ -59,7 +64,7 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
             ) { backStackEntry ->
                 val details: Details = backStackEntry.toRoute()
                 DetailsView(
-                    colors = currentScoutColor,
+                    colors = currentPixelColors,
                     slug = details.slug,
                     navigateToDetailView = {
                         appNavigationController.navigate(Details(slug = it))

@@ -23,7 +23,7 @@ import com.adewan.scout.R
 import com.adewan.scout.ui.features.home.HomeTabView
 import com.adewan.scout.ui.features.library.LibraryTabView
 import com.adewan.scout.ui.features.profile.ProfileTabView
-import com.adewan.scout.ui.theme.ScoutColors
+import com.adewan.scout.ui.theme.PixelColors
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -50,8 +50,8 @@ sealed class BottomNavDestination(
 
 @Composable
 fun MainView(
-    colors: ScoutColors,
-    onColorsChanged: (ScoutColors) -> Unit,
+    colors: PixelColors,
+    onColorsChanged: (PixelColors) -> Unit,
     showSearchView: () -> Unit,
     showDetailsView: (String) -> Unit
 ) {
@@ -106,7 +106,7 @@ fun MainView(
 @Composable
 fun MainViewBottomBar(
     currentDestination: NavDestination?,
-    colors: ScoutColors,
+    colors: PixelColors,
     onItemClicked: (String) -> Unit
 ) {
     NavigationBar(containerColor = colors.backgroundColor, tonalElevation = 0.dp) {

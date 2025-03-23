@@ -12,8 +12,12 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.time.Instant
 
@@ -25,7 +29,8 @@ enum class AuthenticationState {
 class FirebaseAuthenticationRepository(
     private val auth: FirebaseAuth,
     private val datastore: FirebaseFirestore,
-    private val networkClient: NetworkClient
+    private val networkClient: NetworkClient,
+    private val io: CoroutineDispatcher = Dispatchers.IO
 ) {
     private val initialState = if (auth.currentUser != null) {
         AuthenticationState.USER_AUTHENTICATED
@@ -35,11 +40,13 @@ class FirebaseAuthenticationRepository(
     private val authenticationState = MutableStateFlow(initialState)
 
     private var accessToken: String? = null
+    private val ioScope = CoroutineScope(io)
 
     init {
         auth.addAuthStateListener {
             if (it.currentUser != null) {
                 authenticationState.value = AuthenticationState.USER_AUTHENTICATED
+                ioScope.launch { accessToken = getAccessToken() }
             } else {
                 authenticationState.value = AuthenticationState.USER_UNAUTHENTICATED
             }
@@ -50,8 +57,9 @@ class FirebaseAuthenticationRepository(
         return authenticationState
     }
 
-    fun getCurrentAccessToken(): String {
-        return accessToken ?: throw IllegalStateException("Make sure user is authenticated")
+    suspend fun getCurrentAccessToken(): String {
+        return accessToken ?: getAccessToken()
+        ?: throw IllegalStateException("Cannot get access token, this shouldn't happen")
     }
 
     fun getCurrentUser(): FirebaseUser {

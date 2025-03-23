@@ -6,15 +6,15 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.adewan.scout.core.auth.FirebaseAuthenticationRepository
 import com.adewan.scout.core.game.GameRepository
-import com.adewan.scout.core.genres.GenreRepository
 import com.adewan.scout.core.local.DataStoreRepository
 import com.adewan.scout.core.network.NetworkClient
 import com.adewan.scout.core.network.QueryGeneratorRepository
-import com.adewan.scout.core.platform.PlatformRepository
+import com.adewan.scout.core.preference.PreferenceRepository
 import com.adewan.scout.ui.features.home.HomeTabViewModel
 import com.adewan.scout.ui.features.login.LoginViewModel
 import com.adewan.scout.ui.features.navigation.AppNavigationViewModel
 import com.adewan.scout.ui.features.profile.ProfileTabViewModel
+import com.adewan.scout.usecases.AreUserPreferencesSetUseCase
 import com.adewan.scout.usecases.IsUserLoggedInUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,8 +31,12 @@ val appModule = module {
             networkClient = get()
         )
     }
-    single { PlatformRepository(resources = get<Context>().resources) }
-    single { GenreRepository(resources = get<Context>().resources) }
+    single {
+        PreferenceRepository(
+            auth = FirebaseAuth.getInstance(),
+            store = FirebaseFirestore.getInstance()
+        )
+    }
     single {
         GameRepository(
             networkClient = get(),
@@ -41,20 +45,24 @@ val appModule = module {
         )
     }
     single {
-        QueryGeneratorRepository(
-            dataStoreRepository = get(),
-            platformRepository = get(),
-            genreRepository = get(),
-        )
+        QueryGeneratorRepository(dataStoreRepository = get())
     }
     single { DataStoreRepository(dataStore = get()) }
     single<DataStore<Preferences>> { get<Context>().dataStore }
 
     factory { IsUserLoggedInUseCase(firebaseAuthenticationRepository = get()) }
+    factory { AreUserPreferencesSetUseCase(preferenceRepository = get()) }
     factory { NetworkClient() }
 
-    viewModel { AppNavigationViewModel(isUserLoggedIn = get()) }
-    viewModel { LoginViewModel(firebaseAuthenticationRepository = get()) }
+    viewModel {
+        AppNavigationViewModel(
+            isUserLoggedIn = get(),
+            areUserPreferencesSetUseCase = get()
+        )
+    }
+    viewModel {
+        LoginViewModel(firebaseAuthenticationRepository = get())
+    }
     viewModel { ProfileTabViewModel(firebaseAuthenticationRepository = get()) }
     viewModel { HomeTabViewModel() }
 }

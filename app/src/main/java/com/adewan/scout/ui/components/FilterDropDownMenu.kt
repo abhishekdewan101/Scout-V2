@@ -39,7 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.adewan.scout.ui.theme.ScoutColors
+import com.adewan.scout.ui.theme.PixelColors
 import com.adewan.scout.ui.theme.defaultScoutColor
 import com.adewan.scout.ui.theme.poppinsFont
 
@@ -47,7 +47,7 @@ import com.adewan.scout.ui.theme.poppinsFont
 @Composable
 fun FilterDropDownMenu(
     modifier: Modifier = Modifier,
-    colors: ScoutColors,
+    colors: PixelColors,
     currentFilterValue: String,
     currentSelectedFilterIndices: List<Int>,
     filterOptionList: List<String>,
@@ -138,7 +138,7 @@ fun FilterDropDownMenu(
 @Composable
 fun FilterDropDownItem(
     modifier: Modifier = Modifier,
-    colors: ScoutColors,
+    colors: PixelColors,
     item: String,
     isSelected: Boolean,
 ) {

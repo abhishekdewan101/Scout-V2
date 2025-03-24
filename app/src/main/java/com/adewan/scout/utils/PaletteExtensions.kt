@@ -2,11 +2,11 @@ package com.adewan.scout.utils
 
 import androidx.palette.graphics.Palette
 import com.adewan.scout.ui.theme.PixelColors
-import com.adewan.scout.ui.theme.defaultScoutColor
+import com.adewan.scout.ui.theme.defaultPixelColors
 
-fun Palette?.getScoutColors(): PixelColors {
+fun Palette?.toPixelColors(): PixelColors {
     if (this == null) {
-        return defaultScoutColor
+        return defaultPixelColors
     }
 
     var color = getDominantColor(0)
@@ -14,7 +14,7 @@ fun Palette?.getScoutColors(): PixelColors {
         color = getVibrantColor(0)
     }
     return if (color == 0) {
-        defaultScoutColor
+        defaultPixelColors
     } else {
         color.toColor().run {
             PixelColors(backgroundColor = this, contrastColor = this.getContrastingColor())

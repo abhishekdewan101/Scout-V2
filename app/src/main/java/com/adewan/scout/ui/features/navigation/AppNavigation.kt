@@ -14,9 +14,9 @@ import com.adewan.scout.ui.components.FullScreenLoadingIndicator
 import com.adewan.scout.ui.features.details.DetailsView
 import com.adewan.scout.ui.features.login.LoginView
 import com.adewan.scout.ui.features.main.MainView
-import com.adewan.scout.ui.features.preference.PreferenceView
+import com.adewan.scout.ui.features.preference.PreferenceNavHost
 import com.adewan.scout.ui.features.search.SearchView
-import com.adewan.scout.ui.theme.defaultScoutColor
+import com.adewan.scout.ui.theme.defaultPixelColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -26,7 +26,7 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
         FullScreenLoadingIndicator()
     } else {
         val appNavigationController = rememberNavController()
-        var currentPixelColors by remember { mutableStateOf(defaultScoutColor) }
+        var currentPixelColors by remember { mutableStateOf(defaultPixelColors) }
 
         NavHost(
             navController = appNavigationController, startDestination = localStartDestination
@@ -36,7 +36,7 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
             }
 
             composable<Preferences> {
-                PreferenceView(colors = currentPixelColors)
+                PreferenceNavHost()
             }
 
             composable<Main> {

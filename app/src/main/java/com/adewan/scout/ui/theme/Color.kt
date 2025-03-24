@@ -13,6 +13,6 @@ val Pink40 = Color(0xFF7D5260)
 
 data class PixelColors(val backgroundColor: Color, val contrastColor: Color)
 
-val defaultScoutColor = PixelColors(Color(0xFF1d1d1d), Color.White)
+val defaultPixelColors = PixelColors(Color(0xFF1d1d1d), Color.White)
 
-val LocalScoutColors = staticCompositionLocalOf { defaultScoutColor }
+val LocalScoutColors = staticCompositionLocalOf { defaultPixelColors }

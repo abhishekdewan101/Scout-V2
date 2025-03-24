@@ -40,7 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adewan.scout.ui.theme.PixelColors
-import com.adewan.scout.ui.theme.defaultScoutColor
+import com.adewan.scout.ui.theme.defaultPixelColors
 import com.adewan.scout.ui.theme.poppinsFont
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -180,7 +180,7 @@ fun PreviewFilterDropDownMenu() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp),
-            colors = defaultScoutColor,
+            colors = defaultPixelColors,
             currentFilterValue = "All Platforms",
             filterOptionList = listOf(
                 "Option 1", "Option 2", "Option 3", "Option 4", "Option 5"

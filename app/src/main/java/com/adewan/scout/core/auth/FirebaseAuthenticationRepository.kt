@@ -8,7 +8,6 @@ import com.adewan.scout.core.network.models.IgdbAuthentication
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
@@ -60,11 +59,6 @@ class FirebaseAuthenticationRepository(
     suspend fun getCurrentAccessToken(): String {
         return accessToken ?: getAccessToken()
         ?: throw IllegalStateException("Cannot get access token, this shouldn't happen")
-    }
-
-    fun getCurrentUser(): FirebaseUser {
-        return auth.currentUser
-            ?: throw IllegalStateException("Call this only when user is authenticated")
     }
 
     fun getCredentialRequest(): GetCredentialRequest {

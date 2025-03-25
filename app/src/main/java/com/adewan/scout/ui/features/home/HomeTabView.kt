@@ -55,7 +55,6 @@ import com.adewan.scout.ui.theme.PixelColors
 import com.adewan.scout.ui.theme.poppinsFont
 import com.adewan.scout.utils.ExtractColorFromImage
 import com.adewan.scout.utils.games
-import com.adewan.scout.utils.imageList
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -76,7 +75,7 @@ fun HomeTabView(
     val currentSelectedPlatforms = remember { mutableStateListOf<Int>() }
     val currentSelectedGenres = remember { mutableStateListOf<Int>() }
     val currentSelectedReleaseWindows = remember { mutableStateListOf<Int>() }
-
+    
     if (showListSelectionBottomSheet) {
         ShowcaseListBottomSheet(
             selectedList = viewModel.currentSelectedList,
@@ -126,7 +125,10 @@ fun HomeTabView(
         }
         item {
             ShowcaseListPager(
-                items = imageList, onColorsChanged = onColorsChanged, onItemPressed = onItemPressed
+                items = viewModel.currentShowcaseGames.filter { it.poster != null }
+                    .map { it.poster!!.largeImage },
+                onColorsChanged = onColorsChanged,
+                onItemPressed = onItemPressed
             )
         }
         item {

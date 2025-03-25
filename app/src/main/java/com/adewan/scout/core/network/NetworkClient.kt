@@ -1,5 +1,6 @@
 package com.adewan.scout.core.network
 
+import android.util.Log
 import com.adewan.scout.BuildConfig
 import com.adewan.scout.core.network.models.IgdbAuthentication
 import com.adewan.scout.core.network.models.IgdbGame
@@ -15,11 +16,10 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import logcat.LogPriority
-import logcat.logcat
 
 const val igdbAuthenticationEndpoint = "https://id.twitch.tv/oauth2/token"
 const val gameEndpoint = "https://api.igdb.com/v4/games"
@@ -41,15 +41,13 @@ class NetworkClient {
                         })
             }
             install(Logging) {
-                if (BuildConfig.DEBUG) {
-                    level = LogLevel.ALL
-                    logger =
-                        object : Logger {
-                            override fun log(message: String) {
-                                logcat(LogPriority.INFO) { message }
-                            }
-                        }
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        Log.d("KtorClient", message)
+                    }
                 }
+                level = LogLevel.ALL
+                sanitizeHeader { header -> header == HttpHeaders.Authorization }
             }
         }
 

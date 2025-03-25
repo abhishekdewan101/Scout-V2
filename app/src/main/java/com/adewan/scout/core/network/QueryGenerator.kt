@@ -11,7 +11,7 @@ class QueryGeneratorRepository(private val dataStoreRepository: DataStoreReposit
     suspend fun generateUpcomingQuery(): String {
         ensurePreferenceStrings()
         return "f name,slug, rating, hypes, first_release_date, cover.id, cover.image_id, screenshots.id, screenshots.image_id;" +
-                "w first_release_date >= ${Instant.now().epochSecond} & platforms =($platformQueryString) & category=(0,1,2,8,9) & genres = ($genreQueryString);" +
+                "w first_release_date >= ${Instant.now().epochSecond} & category=(0,1,2,8,9);" +
                 "s hypes desc;" +
                 "l 50;"
     }
@@ -27,7 +27,7 @@ class QueryGeneratorRepository(private val dataStoreRepository: DataStoreReposit
     suspend fun generateRecentlyReleasedQuery(): String {
         ensurePreferenceStrings()
         return "f name,slug, rating, hypes,first_release_date, cover.*;" +
-                "w rating >= 65 & rating <= 100 & first_release_date < ${Instant.now().epochSecond} & platforms =($platformQueryString) & category=(0,1,2,8,9) & genres = ($genreQueryString);" +
+                "w rating >= 65 & rating <= 100 & first_release_date < ${Instant.now().epochSecond} & category=(0,1,2,8,9);" +
                 "s first_release_date desc;" +
                 "l 50;"
     }

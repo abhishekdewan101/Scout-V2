@@ -36,7 +36,7 @@ fun AppNavigation(viewModel: AppNavigationViewModel = koinViewModel()) {
             }
 
             composable<Preferences> {
-                PreferenceNavHost()
+                PreferenceNavHost(navigateToMain = { appNavigationController.navigate(Main) })
             }
 
             composable<Main> {

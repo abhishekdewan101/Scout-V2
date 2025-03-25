@@ -3,6 +3,8 @@ package com.adewan.scout.core.network
 import com.adewan.scout.BuildConfig
 import com.adewan.scout.core.network.models.IgdbAuthentication
 import com.adewan.scout.core.network.models.IgdbGame
+import com.adewan.scout.core.network.models.IgdbGenre
+import com.adewan.scout.core.network.models.IgdbPlatform
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.android.Android
@@ -22,6 +24,8 @@ import logcat.logcat
 const val igdbAuthenticationEndpoint = "https://id.twitch.tv/oauth2/token"
 const val gameEndpoint = "https://api.igdb.com/v4/games"
 const val popularityEndpoint = "https://api.igdb.com/v4/popularity_primitives"
+const val genreEndpoint = "https://api.igdb.com/v4/genres"
+const val platformEndpoint = "https://api.igdb.com/v4/platforms"
 
 
 class NetworkClient {
@@ -30,11 +34,11 @@ class NetworkClient {
             install(ContentNegotiation) {
                 json(
                     json =
-                    Json {
-                        prettyPrint = true
-                        isLenient = true
-                        ignoreUnknownKeys = true
-                    })
+                        Json {
+                            prettyPrint = true
+                            isLenient = true
+                            ignoreUnknownKeys = true
+                        })
             }
             install(Logging) {
                 if (BuildConfig.DEBUG) {
@@ -67,6 +71,24 @@ class NetworkClient {
                 setBody(query)
             }
             .body()
+    }
+
+    suspend fun getGenres(accessToken: String): List<IgdbGenre> {
+        return client.post(url = Url(genreEndpoint)) {
+            header("Client-ID", BuildConfig.clientId)
+            header("Authorization", "Bearer $accessToken")
+            header("Content-Type", "application/json")
+            setBody("f name, slug; l 200;")
+        }.body()
+    }
+
+    suspend fun getPlatforms(accessToken: String): List<IgdbPlatform> {
+        return client.post(url = Url(platformEndpoint)) {
+            header("Client-ID", BuildConfig.clientId)
+            header("Authorization", "Bearer $accessToken")
+            header("Content-Type", "application/json")
+            setBody("f name, slug, generation; l 200;")
+        }.body()
     }
 
 }

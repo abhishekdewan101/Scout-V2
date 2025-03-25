@@ -1,11 +1,13 @@
-package com.adewan.scout.core.game
+package com.adewan.scout.core.igdb
 
 import com.adewan.scout.core.auth.FirebaseAuthenticationRepository
 import com.adewan.scout.core.network.NetworkClient
 import com.adewan.scout.core.network.QueryGeneratorRepository
 import com.adewan.scout.core.network.models.IgdbGame
+import com.adewan.scout.core.network.models.IgdbGenre
+import com.adewan.scout.core.network.models.IgdbPlatform
 
-class GameRepository(
+class IgdbRepository(
     private val networkClient: NetworkClient,
     private val firebaseAuthenticationRepository: FirebaseAuthenticationRepository,
     private val queryGeneratorRepository: QueryGeneratorRepository
@@ -34,4 +36,13 @@ class GameRepository(
         )
     }
 
+    suspend fun getGenres(): List<IgdbGenre> {
+        val accessToken = firebaseAuthenticationRepository.getCurrentAccessToken()
+        return networkClient.getGenres(accessToken = accessToken)
+    }
+
+    suspend fun getPlatforms(): List<IgdbPlatform> {
+        val accessToken = firebaseAuthenticationRepository.getCurrentAccessToken()
+        return networkClient.getPlatforms(accessToken = accessToken)
+    }
 }

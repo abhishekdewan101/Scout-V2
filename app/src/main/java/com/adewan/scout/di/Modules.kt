@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.adewan.scout.core.auth.FirebaseAuthenticationRepository
 import com.adewan.scout.core.igdb.IgdbRepository
-import com.adewan.scout.core.local.DataStoreRepository
 import com.adewan.scout.core.network.NetworkClient
 import com.adewan.scout.core.network.QueryGeneratorRepository
 import com.adewan.scout.core.preference.PreferenceRepository
@@ -47,9 +46,9 @@ val appModule = module {
         )
     }
     single {
-        QueryGeneratorRepository(dataStoreRepository = get())
+        QueryGeneratorRepository()
     }
-    single { DataStoreRepository(dataStore = get()) }
+
     single<DataStore<Preferences>> { get<Context>().dataStore }
 
     factory { IsUserLoggedInUseCase(firebaseAuthenticationRepository = get()) }

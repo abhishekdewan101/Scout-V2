@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.adewan.scout.core.network.models.IgdbGame
 import com.adewan.scout.usecases.FetchGamesForShowcaseList
+import com.adewan.scout.usecases.FetchTopRatedGamesUseCase
 import kotlinx.coroutines.launch
 
 enum class ShowcaseListType(val title: String) {
@@ -15,7 +16,10 @@ enum class ShowcaseListType(val title: String) {
     Recent("Recently Released")
 }
 
-class HomeTabViewModel(private val fetchGamesForShowcaseList: FetchGamesForShowcaseList) :
+class HomeTabViewModel(
+    private val fetchGamesForShowcaseList: FetchGamesForShowcaseList,
+    private val fetchTopRatedGamesUseCase: FetchTopRatedGamesUseCase
+) :
     ViewModel() {
     var currentSelectedList by mutableStateOf(ShowcaseListType.Upcoming)
         private set
@@ -23,9 +27,15 @@ class HomeTabViewModel(private val fetchGamesForShowcaseList: FetchGamesForShowc
     var currentShowcaseGames = mutableStateListOf<IgdbGame>()
         private set
 
+    var currentTopRatedGames = mutableStateListOf<IgdbGame>()
+        private set
+
     init {
         viewModelScope.launch {
             currentShowcaseGames.addAll(fetchGamesForShowcaseList(currentSelectedList))
+        }
+        viewModelScope.launch {
+            currentTopRatedGames.addAll(fetchTopRatedGamesUseCase())
         }
     }
 

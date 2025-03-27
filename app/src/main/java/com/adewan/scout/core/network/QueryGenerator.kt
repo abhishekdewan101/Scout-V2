@@ -12,7 +12,7 @@ class QueryGeneratorRepository {
 
     suspend fun generateTopRatedQuery(): String {
         return "f name,slug, rating, hypes, first_release_date, cover.id, cover.image_id, screenshots.id, screenshots.image_id, platforms.slug, platforms.name, involved_companies.developer, involved_companies.publisher, involved_companies.company.name, involved_companies.company.slug;" +
-                "w rating >= 75  & category=(0,1,2,8,9);" +
+                "w rating >= 75 & category=(0,1,2,8,9);" +
                 "s rating desc;" +
                 "l 50;"
     }

@@ -16,6 +16,7 @@ import com.adewan.scout.ui.features.preference.PreferenceViewModel
 import com.adewan.scout.ui.features.profile.ProfileTabViewModel
 import com.adewan.scout.usecases.AreUserPreferencesSetUseCase
 import com.adewan.scout.usecases.FetchGamesForShowcaseList
+import com.adewan.scout.usecases.FetchTopRatedGamesUseCase
 import com.adewan.scout.usecases.IsUserLoggedInUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -54,6 +55,7 @@ val appModule = module {
     factory { IsUserLoggedInUseCase(firebaseAuthenticationRepository = get()) }
     factory { FetchGamesForShowcaseList(authenticationRepository = get(), gameRepository = get()) }
     factory { AreUserPreferencesSetUseCase(preferenceRepository = get()) }
+    factory { FetchTopRatedGamesUseCase(authenticationRepository = get(), gameRepository = get()) }
     factory { NetworkClient() }
 
     viewModel {
@@ -67,5 +69,10 @@ val appModule = module {
     }
     viewModel { ProfileTabViewModel(firebaseAuthenticationRepository = get()) }
     viewModel { PreferenceViewModel(preferenceRepository = get(), igdbRepository = get()) }
-    viewModel { HomeTabViewModel(fetchGamesForShowcaseList = get()) }
+    viewModel {
+        HomeTabViewModel(
+            fetchGamesForShowcaseList = get(),
+            fetchTopRatedGamesUseCase = get()
+        )
+    }
 }

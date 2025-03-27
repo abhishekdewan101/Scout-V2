@@ -6,5 +6,5 @@ fun Double?.twoDecimalPlaces(): String? {
     if (this == null) return null
     val decimalFormat = DecimalFormat("#.##")
     val formattedValue = decimalFormat.format(this)
-    return "$formattedValue%"
+    return "$formattedValue"
 }

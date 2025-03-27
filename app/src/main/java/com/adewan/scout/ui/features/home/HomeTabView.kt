@@ -54,7 +54,7 @@ import com.adewan.scout.ui.components.SpacerPoster
 import com.adewan.scout.ui.theme.PixelColors
 import com.adewan.scout.ui.theme.poppinsFont
 import com.adewan.scout.utils.ExtractColorFromImage
-import com.adewan.scout.utils.games
+import com.adewan.scout.utils.twoDecimalPlaces
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -75,7 +75,7 @@ fun HomeTabView(
     val currentSelectedPlatforms = remember { mutableStateListOf<Int>() }
     val currentSelectedGenres = remember { mutableStateListOf<Int>() }
     val currentSelectedReleaseWindows = remember { mutableStateListOf<Int>() }
-    
+
     if (showListSelectionBottomSheet) {
         ShowcaseListBottomSheet(
             selectedList = viewModel.currentSelectedList,
@@ -143,18 +143,18 @@ fun HomeTabView(
             )
         }
 
-        itemsIndexed(games) { index, game ->
+        itemsIndexed(viewModel.currentTopRatedGames) { index, game ->
             GameRow(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .clickable { onItemPressed(game.slug) },
-                posterUrl = game.posterUrl,
+                posterUrl = game.poster?.largeImage ?: "",
                 title = game.name,
-                subTitle = game.publisher,
+                subTitle = game.involvedCompanies.firstOrNull { it.publisher }?.company?.name ?: "",
                 index = index,
                 textColor = colors.contrastColor,
-                rating = game.rating.toString(),
-                platform = game.platform
+                rating = game.rating?.toDouble().twoDecimalPlaces(),
+                platform = game.platforms.firstOrNull()?.name ?: ""
             )
         }
     }

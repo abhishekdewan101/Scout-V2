@@ -1,6 +1,9 @@
 package com.adewan.scout.ui.features.preference
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -79,7 +82,22 @@ fun PreferenceNavHost(
     val scope = rememberCoroutineScope()
 
     NavHost(navController = navController, startDestination = PreferenceMain) {
-        composable<PreferenceMain> {
+        composable<PreferenceMain>(
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                    targetOffset = { it / 3 },
+                    animationSpec = tween(300)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.End,
+                    initialOffset = { it / 3 },
+                    animationSpec = tween(300)
+                )
+            }
+        ) {
             PreferenceView(
                 areGenresSelected = viewModel.currentSelectedGenres.isNotEmpty(),
                 arePlatformsSelected = viewModel.currentSelectedPlatforms.isNotEmpty(),
@@ -95,10 +113,34 @@ fun PreferenceNavHost(
             )
         }
 
-        composable<PreferencePlatform>(enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left, initialOffset = { it + 200 })
-        }) {
+        composable<PreferencePlatform>(
+            enterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(300)
+                ) + fadeIn(animationSpec = tween(150))
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                    targetOffset = { it / 3 },
+                    animationSpec = tween(300)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.End,
+                    initialOffset = { it / 3 },
+                    animationSpec = tween(300)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(300)
+                ) + fadeOut(animationSpec = tween(150))
+            }
+        ) {
             PreferenceSelectionList(
                 colors = colors,
                 title = "Select your preferred platform",
@@ -110,10 +152,34 @@ fun PreferenceNavHost(
             )
         }
 
-        composable<PreferenceGenres>(enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left, initialOffset = { it + 200 })
-        }) {
+        composable<PreferenceGenres>(
+            enterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(300)
+                ) + fadeIn(animationSpec = tween(150))
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                    targetOffset = { it / 3 },
+                    animationSpec = tween(300)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.End,
+                    initialOffset = { it / 3 },
+                    animationSpec = tween(300)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(300)
+                ) + fadeOut(animationSpec = tween(150))
+            }
+        ) {
             PreferenceSelectionList(
                 colors = colors,
                 title = "Select your preferred genres",

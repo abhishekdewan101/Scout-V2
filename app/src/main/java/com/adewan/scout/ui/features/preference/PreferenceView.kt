@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +30,8 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -323,6 +326,17 @@ fun <T> PreferenceSelectionList(
     if (preferences.isEmpty()) {
         FullScreenLoadingIndicator()
     } else {
+        var searchQuery by remember { mutableStateOf("") }
+        val filteredPreferences = remember(searchQuery, preferences) {
+            if (searchQuery.isEmpty()) {
+                preferences
+            } else {
+                preferences.filter {
+                    getLabel(it).contains(searchQuery, ignoreCase = true)
+                }
+            }
+        }
+
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
@@ -357,6 +371,39 @@ fun <T> PreferenceSelectionList(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    placeholder = {
+                        Text(
+                            "Search",
+                            color = colors.contrastColor.copy(alpha = 0.6f)
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = null,
+                            tint = colors.contrastColor
+                        )
+                    },
+                    textStyle = TextStyle(color = colors.contrastColor),
+                    shape = RoundedCornerShape(10.dp),
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = colors.contrastColor,
+                        unfocusedBorderColor = colors.contrastColor.copy(alpha = 0.6f),
+                        cursorColor = colors.contrastColor,
+                        focusedContainerColor = colors.backgroundColor,
+                        unfocusedContainerColor = colors.backgroundColor,
+                        focusedTextColor = colors.contrastColor,
+                        unfocusedTextColor = colors.contrastColor
+                    )
+                )
+
                 LazyColumn(
                     modifier = Modifier
                         .padding(16.dp)
@@ -364,7 +411,7 @@ fun <T> PreferenceSelectionList(
                         .clip(RoundedCornerShape(10.dp))
                         .background(colors.contrastColor)
                 ) {
-                    itemsIndexed(preferences) { index, item ->
+                    itemsIndexed(filteredPreferences) { index, item ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -390,7 +437,7 @@ fun <T> PreferenceSelectionList(
                                 )
                             }
                         }
-                        if (index != preferences.lastIndex) {
+                        if (index != filteredPreferences.lastIndex) {
                             HorizontalDivider(color = colors.backgroundColor)
                         }
                     }

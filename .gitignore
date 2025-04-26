@@ -17,3 +17,4 @@ dev.keystore
 app/google-services.json
 /.idea/appInsightsSettings.xml
 .kotlin/sessions/kotlin-compiler-1371583288152403095.salive
+/.idea/ChatHistory_schema_v2.xml

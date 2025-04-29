@@ -5,31 +5,37 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.adewan.scout.usecases.AreUserPreferencesSetUseCase
-import com.adewan.scout.usecases.IsUserLoggedInUseCase
+import com.adewan.scout.core.auth.AuthenticationState
+import com.adewan.scout.core.auth.FirebaseAuthenticationRepository
+import com.adewan.scout.core.preference.PreferenceRepository
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class AppNavigationViewModel(
-    isUserLoggedIn: IsUserLoggedInUseCase,
-    areUserPreferencesSetUseCase: AreUserPreferencesSetUseCase
+    private val firebaseAuthenticationRepository: FirebaseAuthenticationRepository,
+    private val preferenceRepository: PreferenceRepository
 ) : ViewModel() {
     var startDestination by mutableStateOf<Any?>(null)
         private set
 
     init {
         viewModelScope.launch {
-            isUserLoggedIn().collectLatest { isUserLoggedIn ->
+            firebaseAuthenticationRepository.getAuthenticationState().collectLatest { authState ->
+                val isUserLoggedIn = authState == AuthenticationState.USER_AUTHENTICATED
+
                 if (!isUserLoggedIn) {
                     startDestination = Login
                     return@collectLatest
                 }
-                areUserPreferencesSetUseCase().collectLatest { areUserPreferencesSet ->
-                    if (!areUserPreferencesSet) {
-                        startDestination = Preferences
-                    } else {
-                        startDestination = Main
-                    }
+
+                val arePreferencesSet =
+                    preferenceRepository.getUserPreferredGenres().isNotEmpty() &&
+                            preferenceRepository.getUserPreferredPlatforms().isNotEmpty()
+
+                if (!arePreferencesSet) {
+                    startDestination = Preferences
+                } else {
+                    startDestination = Main
                 }
             }
         }

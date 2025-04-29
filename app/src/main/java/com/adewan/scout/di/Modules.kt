@@ -14,10 +14,8 @@ import com.adewan.scout.ui.features.login.LoginViewModel
 import com.adewan.scout.ui.features.navigation.AppNavigationViewModel
 import com.adewan.scout.ui.features.preference.PreferenceViewModel
 import com.adewan.scout.ui.features.profile.ProfileTabViewModel
-import com.adewan.scout.usecases.AreUserPreferencesSetUseCase
 import com.adewan.scout.usecases.FetchGamesForShowcaseList
 import com.adewan.scout.usecases.FetchTopRatedGamesUseCase
-import com.adewan.scout.usecases.IsUserLoggedInUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.core.module.dsl.viewModel
@@ -52,16 +50,14 @@ val appModule = module {
 
     single<DataStore<Preferences>> { get<Context>().dataStore }
 
-    factory { IsUserLoggedInUseCase(firebaseAuthenticationRepository = get()) }
     factory { FetchGamesForShowcaseList(authenticationRepository = get(), gameRepository = get()) }
-    factory { AreUserPreferencesSetUseCase(preferenceRepository = get()) }
     factory { FetchTopRatedGamesUseCase(authenticationRepository = get(), gameRepository = get()) }
     factory { NetworkClient() }
 
     viewModel {
         AppNavigationViewModel(
-            isUserLoggedIn = get(),
-            areUserPreferencesSetUseCase = get()
+            firebaseAuthenticationRepository = get(),
+            preferenceRepository = get()
         )
     }
     viewModel {

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "android": {
+      "command": "/Users/abhishekdewan/.pyenv/shims/uv",
+      "args": [
+        "--directory",
+        "/Users/abhishekdewan/Documents/Developer/android-mcp-server",
+        "run",
+        "server.py"
+      ]
+    }
+  }
+}

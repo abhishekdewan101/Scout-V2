@@ -6,9 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.adewan.scout.core.igdb.IgdbRepository
 import com.adewan.scout.core.network.models.IgdbGame
-import com.adewan.scout.usecases.FetchGamesForShowcaseList
-import com.adewan.scout.usecases.FetchTopRatedGamesUseCase
 import kotlinx.coroutines.launch
 
 enum class ShowcaseListType(val title: String) {
@@ -17,8 +16,7 @@ enum class ShowcaseListType(val title: String) {
 }
 
 class HomeTabViewModel(
-    private val fetchGamesForShowcaseList: FetchGamesForShowcaseList,
-    private val fetchTopRatedGamesUseCase: FetchTopRatedGamesUseCase
+    private val igdbRepository: IgdbRepository
 ) :
     ViewModel() {
     var currentSelectedList by mutableStateOf(ShowcaseListType.Upcoming)
@@ -32,10 +30,10 @@ class HomeTabViewModel(
 
     init {
         viewModelScope.launch {
-            currentShowcaseGames.addAll(fetchGamesForShowcaseList(currentSelectedList))
+            currentShowcaseGames.addAll(getShowcaseGames(currentSelectedList))
         }
         viewModelScope.launch {
-            currentTopRatedGames.addAll(fetchTopRatedGamesUseCase())
+            currentTopRatedGames.addAll(igdbRepository.getTopRatedGames())
         }
     }
 
@@ -43,7 +41,14 @@ class HomeTabViewModel(
         currentSelectedList = listType
         viewModelScope.launch {
             currentShowcaseGames.clear()
-            currentShowcaseGames.addAll(fetchGamesForShowcaseList(currentSelectedList))
+            currentShowcaseGames.addAll(getShowcaseGames(currentSelectedList))
+        }
+    }
+
+    private suspend fun getShowcaseGames(type: ShowcaseListType): List<IgdbGame> {
+        return when (type) {
+            ShowcaseListType.Upcoming -> igdbRepository.getUpcomingGames()
+            ShowcaseListType.Recent -> igdbRepository.getRecentlyReleasedGames()
         }
     }
 }
